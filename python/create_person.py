@@ -52,7 +52,6 @@ class CreatePerson():
         else:
             try:
                 format_check = datetime.datetime.strptime(dob, '%Y-%m-%d')
-                self.cursor.execute(f"INSERT INTO Passengers (DateOfBirth) VALUES ('{dob}')")
             except ValueError:
                 print("Please enter the date of birth in the format: YYY-MM-DD")
                 correct_details = False
