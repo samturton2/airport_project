@@ -122,3 +122,9 @@ def flight_attendees():
 
 **test_functions.py**
 TESTING ALL ABOVE FUNCTIONS
+
+**SQL Initial Data**
+- We created some initial data to act as existing information inside the database. They can be found in the `data` directory above.
+- The following data on Airports were found freely on Google.
+- The different aircraft types were found on Heathrow's airport [here](https://www.heathrow.com/company/life-at-heathrow/heathrow-fan-zone/aircraft-at-heathrow).
+
