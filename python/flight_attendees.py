@@ -108,7 +108,7 @@ class FlightAttendees:
         print("\nPassengers:")
         for person in tuple[0]:
             print(person)
-        [rint("\nStaff:")]    
+        print("\nStaff:")
         for person in tuple[1]:
             print(person)
 
