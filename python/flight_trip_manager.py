@@ -8,7 +8,7 @@ def create_flight_trip():
 
 
 # TABLES: FLIGHT TRIP, AIRCRAFT
-def assign_aircraft():
+def assign_aircraft(FlightTrip_id):
     # INPUT: FLIGHT TRIP ID
 
     # CHECK THAT IT's A VALID FLIGHT TRIP ID
