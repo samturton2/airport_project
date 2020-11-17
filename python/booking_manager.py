@@ -138,5 +138,5 @@ class BookingManager:
 
 if __name__ == "__main__":
     new_bm = BookingManager()
-    new_bm.test()
-    new_bm.make_booking(1, [1, 2, 3])
+    #new_bm.test()
+    #new_bm.make_booking(1, [1, 2, 3])
