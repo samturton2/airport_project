@@ -8,7 +8,7 @@ NEW CHANGE FROM NEW BRANCH
 
 ## ERD
 
-![](images/airport_project_erd_v1.png)
+![](images/airport_project_erd_v2.png)
 
 
 ### Git branching
@@ -21,4 +21,4 @@ NEW CHANGE FROM NEW BRANCH
 - On github request a merge to main
 - Discuss and accept the pull request
 - Delete the old branch locally
-```git branch -d <branch_to_delete>
+```git branch -d <branch_to_delete>```
