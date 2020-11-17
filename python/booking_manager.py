@@ -5,20 +5,22 @@ class BookingManager:
     def __init__(self):
 
         # connect to  DB
-        self.server = "databases1.spartaglobal.academy"
-        self.database = "Group_3_AirportDatabase"
-        self.username = "SA"
-        self.password = "Passw0rd2018"
+        self.server = "ldaijiw-micro.cdix33vx1qyf.eu-west-2.rds.amazonaws.com"
+        self.database = "test_db"
+        self.username = "ldaijiw"
+        self.password = "DreamJLMSU743"
 
         self.start_connection()
 
 
     def start_connection(self):
         # server name, DB name, username, and password are required to connect with pyodbc
-        db_connection = pyodbc.connect(
+        self.db_connection = pyodbc.connect(
             f"DRIVER=ODBC Driver 17 for SQL Server;SERVER={self.server};DATABASE={self.database};UID={self.username};PWD={self.password}"
         )
-        self.cursor = db_connection.cursor()
+        self.cursor = self.db_connection.cursor()
+
+
 
     
     # TABLES: TICKET DETAILS, FLIGHT TRIP, PASSENGERS
@@ -103,40 +105,48 @@ class BookingManager:
 
 
     def test(self):
-        self.cursor.execute('''
-        CREATE TABLE [Passengers] (
-        [Passenger_id] INT IDENTITY(1,1) NOT NULL,
-        [PassportNumber] VARCHAR(9) NOT NULL,
-        [FirstName] VARCHAR(32) NOT NULL,
-        [LastName] VARCHAR(32) NOT NULL,
-        [DateOfBirth] DATE NOT NULL,
-        PRIMARY KEY ([Passenger_id]) 
-        );
-        ''')
+        # self.cursor.execute('''
+        # CREATE TABLE [Passengers] (
+        # [Passenger_id] INT IDENTITY(1,1) NOT NULL,
+        # [PassportNumber] VARCHAR(9) NOT NULL,
+        # [FirstName] VARCHAR(32) NOT NULL,
+        # [LastName] VARCHAR(32) NOT NULL,
+        # [DateOfBirth] DATE NOT NULL,
+        # PRIMARY KEY ([Passenger_id]) 
+        # );
+        # ''')
+        # self.db_connection.commit()
 
-        table_info = self.cursor.execute('''
-        SELECT
-        TABLE_NAME,
-        COLUMN_NAME
-        FROM INFORMATION_SCHEMA.COLUMNS
-        WHERE TABLE_NAME = 'Passengers';
-        ''').fetchall()
-        print(table_info)
+        # table_info = self.cursor.execute('''
+        # SELECT
+        # TABLE_NAME,
+        # COLUMN_NAME
+        # FROM INFORMATION_SCHEMA.COLUMNS
+        # WHERE TABLE_NAME = 'Passengers';
+        # ''').fetchall()
+        # print(table_info)
 
-        insert_data_query = "INSERT INTO Passengers\n(PassportNumber, FirstName, LastName, DateOfBirth)\nVALUES('ABC123456', 'Leo', 'Waltmann', '1999-07-13');"
+        # insert_data_query = "INSERT INTO Passengers\n(PassportNumber, FirstName, LastName, DateOfBirth)\nVALUES('ABC123456', 'Leo', 'Waltmann', '1999-07-13');"
 
-        self.cursor.execute(insert_data_query)
+        # self.cursor.execute(insert_data_query)
         
-        insert_data_query = "INSERT INTO Passengers\n(PassportNumber, FirstName, LastName, DateOfBirth)\nVALUES('ABC123456', 'Oscar', 'Olive', '2010-01-12');"
+        # insert_data_query = "INSERT INTO Passengers\n(PassportNumber, FirstName, LastName, DateOfBirth)\nVALUES('ABC123456', 'Oscar', 'Olive', '2010-01-12');"
 
-        self.cursor.execute(insert_data_query)
+        # self.cursor.execute(insert_data_query)
         
-        insert_data_query = "INSERT INTO Passengers\n(PassportNumber, FirstName, LastName, DateOfBirth)\nVALUES('ABC123456', 'Ben', 'Button', '2019-10-13');"
+        # insert_data_query = "INSERT INTO Passengers\n(PassportNumber, FirstName, LastName, DateOfBirth)\nVALUES('ABC123456', 'Ben', 'Button', '2019-10-13');"
 
-        self.cursor.execute(insert_data_query)
-
+        # self.cursor.execute(insert_data_query)
+        # print(list(self.cursor.execute('''
+        # SELECT sp.name, sp.default_database_name
+        # FROM sys.server_principals sp
+        # WHERE sp.name = SUSER_SNAME();
+        # ''')))
+        #self.cursor.execute("USE test_db;")
+        print(self.cursor.execute("SELECT * FROM Passengers;").fetchall())
+        #self.db_connection.commit()
 
 if __name__ == "__main__":
     new_bm = BookingManager()
-    #new_bm.test()
+    new_bm.test()
     #new_bm.make_booking(1, [1, 2, 3])
