@@ -10,7 +10,6 @@ NEW CHANGE FROM NEW BRANCH
 
 ![](images/airport_project_erd_v2.png)
 
-
 ### Git branching
 - create new branch
 ```git branch <new_branch>```
