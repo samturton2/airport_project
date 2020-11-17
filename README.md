@@ -8,7 +8,7 @@ NEW CHANGE FROM NEW BRANCH
 
 ## ERD
 
-![](images/airport_project_erd_v3.png)
+![](images/airport_project_erd_v4.png)
 
 ### Git branching
 - create new branch
