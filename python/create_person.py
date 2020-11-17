@@ -6,7 +6,7 @@ class CreatePerson():
     def __init__(self):
         # the following block of code is used to establish a pyodbc connection to northwind database
         self.server = "databases1.spartaglobal.academy"
-        self.database = "Northwind"
+        self.database = "Group_3_AirportDatabase"
         self.username = "SA"
         self.password = "Passw0rd2018"
         self.northwind_connection = pyodbc.connect(
