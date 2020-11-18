@@ -1,78 +1,109 @@
--- This was the first iteration of our database, use `Airport_DB_revised` to create a database and tables
+-- What's new?
+-- Added Gender to Passengers and Staff
+-- Removed some NOT NULL restrictions in the FlightTrip table
+        -- We can create flights without requiring an Aircraft_id and availableseats
 
-CREATE DATABASE Group_3_AirportDatabase
-USE Group_3_AirportDatabase
+CREATE DATABASE Airport;
+USE Airport;
 
-DROP TABLE FlightStaff
-DROP TABLE TicketDetails
-DROP TABLE FlightTrip
-DROP TABLE Aircraft
-DROP TABLE AircraftType
-DROP TABLE Airports
-DROP TABLE Staff
-DROP TABLE Passengers
 
-SELECT * FROM Passengers
-SELECT * FROM TicketDetails
-SELECT * FROM FlightTrip
-SELECT * FROM FlightStaff
-SELECT * FROM Staff
-SELECT * FROM Aircraft
-SELECT * FROM AircraftType
-SELECT * FROM Airports
+DROP TABLE FlightStaff;
+DROP TABLE TicketDetails;
+DROP TABLE FlightTrip;
+DROP TABLE Aircraft;
+DROP TABLE AircraftStatus;
+DROP TABLE AircraftType;
+DROP TABLE Airports;
+DROP TABLE Staff;
+DROP TABLE Jobs;
+DROP TABLE Passengers;
+
+
+SELECT * FROM Passengers;
+SELECT * FROM TicketDetails;
+SELECT * FROM FlightTrip;
+SELECT * FROM FlightStaff;
+SELECT * FROM Staff;
+SELECT * FROM Aircraft;
+SELECT * FROM AircraftType;
+SELECT * FROM Airports;
+SELECT * FROM AircraftStatus;
+SELECT * FROM Jobs;
+
 
 CREATE TABLE [Passengers] (
     [Passenger_id] INT IDENTITY(1,1) NOT NULL,
     [PassportNumber] VARCHAR(9) NOT NULL,
     [FirstName] VARCHAR(32) NOT NULL,
     [LastName] VARCHAR(32) NOT NULL,
+    [Gender] VARCHAR(16) NOT NULL,
     [DateOfBirth] DATE NOT NULL,
     PRIMARY KEY ([Passenger_id]) 
 );
 
+
+CREATE TABLE [Jobs] (
+    [Job_id] INT IDENTITY(1,1) NOT NULL,
+    [Job] VARCHAR(32),
+    PRIMARY KEY ([Job_id])
+);
+
+
 CREATE TABLE [Staff] (
     [Staff_id] INT IDENTITY(1,1) NOT NULL,
-    [Username] VARCHAR(16) NOT NULL,
+    [Job_id] INT,
     [FirstName] VARCHAR(32) NOT NULL,
-    [LastName] VARCHAR(40) NOT NULL,
+    [LastName] VARCHAR(32) NOT NULL,
+    [Gender] VARCHAR(32) NOT NULL,
+    [Username] VARCHAR(32) NOT NULL,
     [UserPassword] VARCHAR(32) NOT NULL,
     [PassportNumber] VARCHAR(9) NOT NULL,
     [OnLocation] INT NOT NULL,
-    PRIMARY KEY ([Staff_id])
+    PRIMARY KEY ([Staff_id]),
+    FOREIGN KEY ([Job_id]) REFERENCES Jobs([Job_id])
 );
+
 
 CREATE TABLE [Airports] (
     [Airport_id] VARCHAR(3) NOT NULL,
     [AirportName] VARCHAR(32) NOT NULL,
-    [AirportCity] VARCHAR(32) NOT NULL,
     [AirportCountry] VARCHAR(32) NOT NULL,
     [Timezone] INT NOT NULL,
     PRIMARY KEY ([Airport_id])
 );
 
+
 CREATE TABLE [AircraftType] (
     [AircraftType_id] INT IDENTITY(1,1) NOT NULL,
-    [Model] VARCHAR(10) NOT NULL,
+    [Type] VARCHAR(32) NOT NULL,
     [MaxCapacity] INT NOT NULL,
     PRIMARY KEY ([AircraftType_id])
 );
 
+
+CREATE TABLE [AircraftStatus] (
+    [AircraftStatus_id] INT IDENTITY(1,1) NOT NULL,
+    [Status] VARCHAR(32),
+    PRIMARY KEY ([AircraftStatus_id])
+);
+
+
 CREATE TABLE [Aircraft] (
     [Aircraft_id] INT IDENTITY(1,1) NOT NULL,
+    [AircraftStatus_id] INT NOT NULL,
     [AircraftType_id] INT NOT NULL,
-    [OnFlight] INT NOT NULL,
-    [AssignedToFlight] INT NOT NULL,
-    [OnLocation] INT NOT NULL,
     PRIMARY KEY ([Aircraft_id]),
     FOREIGN KEY ([AircraftType_id]) REFERENCES AircraftType(AircraftType_id),
+    FOREIGN KEY ([AircraftStatus_id]) REFERENCES AircraftStatus(AircraftStatus_id)
 );
+
 
 CREATE TABLE [FlightTrip] (
     [FlightTrip_id] INT IDENTITY(1,1) NOT NULL,
-    [Aircraft_id] INT NOT NULL,
+    [Aircraft_id] INT,
     [DepartureTime] DATETIME NOT NULL,
     [ArrivalTime] DATETIME NOT NULL,
-    [AvailableSeats] INT NOT NULL,
+    [AvailableSeats] INT,
     [DepartureAirport] VARCHAR(3) NOT NULL,
     [ArrivalAirport] VARCHAR(3) NOT NULL,
     [TicketPrice] DECIMAL(6,2) NOT NULL,
@@ -82,6 +113,7 @@ CREATE TABLE [FlightTrip] (
     FOREIGN KEY ([DepartureAirport]) REFERENCES Airports(Airport_id),
     FOREIGN KEY ([ArrivalAirport]) REFERENCES Airports(Airport_id)
 );
+
 
 CREATE TABLE [TicketDetails] (
     [Ticket_id] INT IDENTITY(3246,1) NOT NULL,

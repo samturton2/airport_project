@@ -1,26 +1,15 @@
--- This was the first iteration of our database, use `Airport_DB_revised` to create a database and tables
+# SQL DB Creation
+The SQL DB and Tables for the Airport were created
+based on the ERD diagram as discussed in group meeting.
 
+- First, the database was created for the group:
+```sql
 CREATE DATABASE Group_3_AirportDatabase
 USE Group_3_AirportDatabase
+```
 
-DROP TABLE FlightStaff
-DROP TABLE TicketDetails
-DROP TABLE FlightTrip
-DROP TABLE Aircraft
-DROP TABLE AircraftType
-DROP TABLE Airports
-DROP TABLE Staff
-DROP TABLE Passengers
-
-SELECT * FROM Passengers
-SELECT * FROM TicketDetails
-SELECT * FROM FlightTrip
-SELECT * FROM FlightStaff
-SELECT * FROM Staff
-SELECT * FROM Aircraft
-SELECT * FROM AircraftType
-SELECT * FROM Airports
-
+- Then each table was created based on the ERD diagram:
+```sql
 CREATE TABLE [Passengers] (
     [Passenger_id] INT IDENTITY(1,1) NOT NULL,
     [PassportNumber] VARCHAR(9) NOT NULL,
@@ -100,3 +89,26 @@ CREATE TABLE [FlightStaff] (
     FOREIGN KEY ([FlightTrip_id]) REFERENCES FlightTrip(FlightTrip_id),
     FOREIGN KEY ([Staff_id]) REFERENCES Staff(Staff_id)
 );
+```
+- The following code deletes all of the tables in case
+there is an error as well as displaying the contents of 
+the table
+```sql
+DROP TABLE FlightStaff
+DROP TABLE TicketDetails
+DROP TABLE FlightTrip
+DROP TABLE Aircraft
+DROP TABLE AircraftType
+DROP TABLE Airports
+DROP TABLE Staff
+DROP TABLE Passengers
+
+SELECT * FROM Passengers
+SELECT * FROM TicketDetails
+SELECT * FROM FlightTrip
+SELECT * FROM FlightStaff
+SELECT * FROM Staff
+SELECT * FROM Aircraft
+SELECT * FROM AircraftType
+SELECT * FROM Airports
+```
