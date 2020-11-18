@@ -29,7 +29,7 @@ class FlightTripManager:
         # Attempt to collect the last inserted flight trip identity
         FlightTrip_id = list(self.cursor.execute(f"SELECT FlightTrip_id FROM FlightTrip WHERE @@IDENTITY;").fetchone())[0]
         # RETURN: FLIGHT TRIP ID
-        return FlightTrip_id
+        return int(FlightTrip_id)
 
 
     # TABLES: FLIGHT TRIP, AIRCRAFT
@@ -74,6 +74,7 @@ class FlightTripManager:
                 return "This airplane hasn't been assigned an aircraft, we will do that now."
             else:
                 self.cursor.execute(f"UPDATE Aircraft SET AircraftStatus_id = 0 WHERE Aircraft_id = {Aircraft_id};")
+                self.db_connection.commit()
             finally:
                 # RETURN: NEW AIRCRAFT ID
                 return newAircraft_id
