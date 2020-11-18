@@ -62,5 +62,11 @@ def flighttripmanager():
 '''
 BOOKING MANAGER
 '''
+@app.route("/bm/")
+def flighttripmanager():
+    return render_template('bm_home.html')
 
-app.run(debug=True)
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
