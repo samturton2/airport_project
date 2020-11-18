@@ -26,14 +26,17 @@ class BookingManager:
         else:
             return "Connection Successful"
 
-        
 
-
-
-    
     # TABLES: TICKET DETAILS, FLIGHT TRIP, PASSENGERS
     # INPUT: FLIGHT TRIP ID, LIST OF PASSENGER ID
     def make_booking(self, flight_trip_id, passenger_id_list):
+        # check flight trip id is an int
+        if type(flight_trip_id) != int:
+            return "INVALID FLIGHT TRIP ID"
+
+        # check passenger id list is a list
+        if type(passenger_id_list) != list:
+            return "INVALID PASSENGER ID"
 
         # Check flight_trip_id is valid
         flight_trip_exists = True if self.cursor.execute(f"SELECT COUNT(*) FROM FlightTrip WHERE FlightTrip_id = {flight_trip_id}").fetchone()[0] == 1 else False
@@ -42,10 +45,13 @@ class BookingManager:
 
         # Check passenger_id is valid
         for passenger_id in passenger_id_list:
+            # Check passenger id is int
+            if type(passenger_id) != int:
+                return "INVALID PASSENGER ID"
+            
             passenger_id_exists = True if self.cursor.execute(f"SELECT COUNT(*) FROM Passengers WHERE Passenger_id = {passenger_id}").fetchone()[0] == 1 else False
             if not passenger_id_exists:
                 return "INVALID PASSENGER ID"
-
 
         # CHECK HOW MANY SEATS THEY WILL NEED (BABY?)
         passenger_discounts = []
@@ -103,7 +109,7 @@ class BookingManager:
         ''').fetchone()[0]
 
         # calculate passenger prices to pay after considering if they're eligible for discount
-        passenger_prices = [float(ticket_price) - (float(ticket_price) * float(ticket_discount) * passenger_discount) for passenger_discount in passenger_discounts]
+        passenger_prices = [float(ticket_price) - (float(ticket_price) * float(ticket_discount) * passenger_discount/100) for passenger_discount in passenger_discounts]
 
         # ADD FLIGHT TRIP ID/PASSENGER ID TO TICKET DETAILS TABLE
         ticket_id_list = []
@@ -124,55 +130,11 @@ class BookingManager:
             ticket_id_list.append(ticket_id)
 
         # RETURN: TICKET ID, COST OF TICKET (ANY DISCOUNT APPLIED), EXTRA FLIGHT DETAILS
-
         ticket_info_dict = {ticket_id: passenger_prices[i] for i, ticket_id in enumerate(ticket_id_list)}
 
         return ticket_info_dict
 
-
-    def test(self):
-        # self.cursor.execute('''
-        # CREATE TABLE [Passengers] (
-        # [Passenger_id] INT IDENTITY(1,1) NOT NULL,
-        # [PassportNumber] VARCHAR(9) NOT NULL,
-        # [FirstName] VARCHAR(32) NOT NULL,
-        # [LastName] VARCHAR(32) NOT NULL,
-        # [DateOfBirth] DATE NOT NULL,
-        # PRIMARY KEY ([Passenger_id]) 
-        # );
-        # ''')
-        # self.db_connection.commit()
-
-        # table_info = self.cursor.execute('''
-        # SELECT
-        # TABLE_NAME,
-        # COLUMN_NAME
-        # FROM INFORMATION_SCHEMA.COLUMNS
-        # WHERE TABLE_NAME = 'Passengers';
-        # ''').fetchall()
-        # print(table_info)
-
-        # insert_data_query = "INSERT INTO Passengers\n(PassportNumber, FirstName, LastName, DateOfBirth)\nVALUES('ABC123456', 'Leo', 'Waltmann', '1999-07-13');"
-
-        # self.cursor.execute(insert_data_query)
-        
-        # insert_data_query = "INSERT INTO Passengers\n(PassportNumber, FirstName, LastName, DateOfBirth)\nVALUES('ABC123456', 'Oscar', 'Olive', '2010-01-12');"
-
-        # self.cursor.execute(insert_data_query)
-        
-        # insert_data_query = "INSERT INTO Passengers\n(PassportNumber, FirstName, LastName, DateOfBirth)\nVALUES('ABC123456', 'Ben', 'Button', '2019-10-13');"
-
-        # self.cursor.execute(insert_data_query)
-        # print(list(self.cursor.execute('''
-        # SELECT sp.name, sp.default_database_name
-        # FROM sys.server_principals sp
-        # WHERE sp.name = SUSER_SNAME();
-        # ''')))
-        #self.cursor.execute("USE test_db;")
-        print(self.cursor.execute("SELECT * FROM FlightTrip;").fetchall())
-        #self.db_connection.commit()
-
 if __name__ == "__main__":
     new_bm = BookingManager()
     #new_bm.test()
-    new_bm.make_booking(1, [1, 2, 3])
+    print(new_bm.make_booking(2, [4, 6, 7]))
