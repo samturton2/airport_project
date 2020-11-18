@@ -108,76 +108,92 @@ class CreatePerson():
 
         # SQL QUERY TO INPUT INTO STAFF TABLE
         if not job_id:
-            print("Please enter a job ID")
+            # print("Please enter a job ID")
             correct_details = False
+            return "Please enter a job ID"
         elif isinstance(job_id, int) == False:
-            print("Please enter the job ID in digits")
+            # print("Please enter the job ID in digits")
             correct_details = False
+            return "Please enter the job ID in digits"
         else:
             pass
 
         if not user_name:
-            print("Please enter a username")
+            # print("Please enter a username")
             correct_details = False
+            return "Please enter a username"
         elif len(passport_number) > 16:
-            print("Make sure the username is less than 17 characters long")
+            # print("Make sure the username is less than 17 characters long")
             correct_details = False
+            return "Make sure the username is less than 17 characters long"
         else:
             pass
 
 
         if not first_name:
-            print("Please enter a first name")
+            # print("Please enter a first name")
             correct_details = False
+            return "Please enter a first name"
         elif len(passport_number) > 32:
-            print("Make sure the first name you have entered is less than 33 characters long")
+            # print("Make sure the first name you have entered is less than 33 characters long")
             correct_details = False
+            return "Make sure the first name you have entered is less than 33 characters long"
         else:
             pass
 
 
         if not last_name:
-            print("Please enter a last name")
+            # print("Please enter a last name")
             correct_details = False
+            return "Please enter a last name"
         elif len(passport_number) > 40:
-            print("Make sure the first name you have entered is less than 41 characters long")
+            # print("Make sure the first name you have entered is less than 41 characters long")
             correct_details = False
+            return "Make sure the first name you have entered is less than 41 characters long"
         else:
             pass
 
         if not pass_word:
-            print("Please enter a password")
+            # print("Please enter a password")
             correct_details = False
+            return "Please enter a password"
         elif len(pass_word) > 32:
-            print("Make sure the password is less than 33 characters long")
+            # print("Make sure the password is less than 33 characters long")
             correct_details = False
+            return "Make sure the password is less than 33 characters long"
         else:
             pass
 
         if not passport_number:
-            print("Please enter a passport number")
+            # print("Please enter a passport number")
             correct_details = False
+            return "Please enter a passport number"
         elif len(passport_number) > 9:
-            print("Make sure the passport number you have entered in less than 10 characters long")
+            # print("Make sure the passport number you have entered in less than 10 characters long")
             correct_details = False
+            return "Make sure the passport number you have entered in less than 10 characters long"
         else:
             pass
 
         if not on_location:
-            print("Please confirm is the staff member is on location")
+            # print("Please confirm is the staff member is on location")
             correct_details = False
+            return "Please confirm is the staff member is on location"
         elif (on_location != 0) and (on_location != 1):
-            print("Enter 1 if staff member is on location, enter 0 otherwise")
+            # print("Enter 1 if staff member is on location, enter 0 otherwise")
             correct_details = False
+            return "Enter 1 if staff member is on location, enter 0 otherwise"
         else:
             pass
 
         if not gender:
-            print("Please enter a gender")
+            # print("Please enter a gender")
             correct_details = False
+            return "Please enter a gender"
         elif len(gender) > 16:
-            print("Make sure the gender entered is less than 17 characters long")
+            # print("Make sure the gender entered is less than 17 characters long")
             correct_details = False
+            return "Make sure the gender entered is less than 17 characters long"
         else:
             pass
 
@@ -185,16 +201,25 @@ class CreatePerson():
         if correct_details == True:
             self.cursor.execute(f"INSERT INTO Staff (Job_id, Username, FirstName, LastName, Gender, UserPassword, PassportNumber, OnLocation) VALUES ({job_id}, '{user_name}', '{first_name}', '{last_name}', '{gender}', '{pass_word}', '{passport_number}', {on_location})")
             # OUTPUT: SUCCESSFUL MESSAGE
-            print("Staff has been successfully added")
+            # print("Staff has been successfully added")
             self.db_connection.commit()
+            return "Staff has been successfully added"
         else:
-            print("Please try again")
+            # print("Please try again")
+            return "Please try again"
 
+
+# Don't need to test these functions
     def dummy_passenger(self):
-        print(self.cursor.execute("SELECT * FROM Passengers").fetchall())
+        passenger_table = self.cursor.execute("SELECT * FROM Passengers").fetchall()
+        for row in passenger_table:
+            print(row)
 
     def dummy_staff(self):
-        print(self.cursor.execute("SELECT * FROM Staff").fetchall())
+        staff_table = self.cursor.execute("SELECT * FROM Staff").fetchall()
+        for row in staff_table:
+            print(row)
+
 
 # test_run = CreatePerson()
 # test_run.create_passenger('John', 'Doe', '1999-01-01', 'Male', '12345678')
@@ -202,4 +227,3 @@ class CreatePerson():
 # test_run.dummy_passenger()
 # test_run.dummy_staff()
 
-# job_id, first_name, last_name, user_name, pass_word, passport_number, gender, on_location):
