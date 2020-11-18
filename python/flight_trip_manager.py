@@ -18,18 +18,18 @@ class FlightTripManager:
 
     # TABLES: FLIGHT TRIP, AIRPORTS
     def create_flight_trip(self, DepartureTime, ArrivalAirport, TicketPrice, TicketDiscount):
-        # INPUT: DEPARTURE TIME (datetime.today()), ARRIVAL AIRPORT (CDG) , TICKET PRICE (230), TICKET DISCOUNT (0.05)
+        # INPUT: DEPARTURE TIME (datetime.today()), ARRIVAL AIRPORT (MAN) , TICKET PRICE (230), TICKET DISCOUNT (0.05)
         # ESTIMATE ARRIVAL TIME (1 hour for now)
         ArrivalTime = DepartureTime + timedelta(hours = 1)
         self.cursor.execute(f"""
-        INSERT INTO FlightTrip (Aircraft_id, DepartureTime, ArrivalTime, AvailableSeats, DepartureAirport, ArrivalAirport, TicketPrice, TicketDiscount)
-        VALUES ( -1, {DepartureTime.strftime('%Y-%m-%d %H:%M:%S')}, {ArrivalTime.strftime('%Y-%m-%d %H:%M:%S')}, -1, 'LHR', '{ArrivalAirport}', {TicketPrice}, {TicketDiscount});
+        INSERT INTO FlightTrip (DepartureTime, ArrivalTime, DepartureAirport, ArrivalAirport, TicketPrice, TicketDiscount)
+        VALUES ('{DepartureTime.strftime('%Y-%m-%d %H:%M:%S')}', '{ArrivalTime.strftime('%Y-%m-%d %H:%M:%S')}', 'LHR', '{ArrivalAirport}', {TicketPrice}, {TicketDiscount});
         """)
-        self.db_connection.commit()
+        # self.db_connection.commit()
         # Attempt to collect the last inserted flight trip identity
-        FlightTrip_id = list(self.cursor.execute(f"SELECT FlightTrip_id FROM FlightTrip WHERE @@IDENTITY;").fetchone())[0]
+        FlightTrip_id = list(self.cursor.execute(f"SELECT FlightTrip_id FROM FlightTrip WHERE FlightTrip_id = @@IDENTITY;").fetchone())[0]
         # RETURN: FLIGHT TRIP ID
-        return int(FlightTrip_id)
+        return FlightTrip_id
 
 
     # TABLES: FLIGHT TRIP, AIRCRAFT
@@ -39,12 +39,12 @@ class FlightTripManager:
         # CHECK THAT IT's A VALID FLIGHT TRIP ID
         if len(list(trip_id)) == 1:
             # FIND FIRST PLANE THAT IS AVAILABLE AND IN CORRECT LOCATION
-            Aircraft_id = list(self.cursor.execute("SELECT Aircraft_id FROM Aircraft WHERE AircraftStatus_id = 0;").fetchone())[0]
+            Aircraft_id = list(self.cursor.execute("SELECT Aircraft_id FROM Aircraft WHERE AircraftStatus_id = 1;").fetchone())[0]
 
             # ASSIGN AIRCRAFT ID TO FLIGHT CHANGE
             self.cursor.execute(f"UPDATE FlightTrip SET Aircraft_id = {Aircraft_id} WHERE FlightTrip_id = {FlightTrip_id};")
             # ASSIGNED TO FLIGHT TO TRUE
-            self.cursor.execute(f"UPDATE Aircraft SET AircraftStatus_id = 1 WHERE Aircraft_id = {Aircraft_id};")
+            self.cursor.execute(f"UPDATE Aircraft SET AircraftStatus_id = 3 WHERE Aircraft_id = {Aircraft_id};")
             # CHANGE AVAILABLE SEATS TO MAX CAPACITY
             max_capacity = list(self.cursor.execute(f"""
                             SELECT AircraftType.MaxCapacity
@@ -54,7 +54,7 @@ class FlightTripManager:
             self.cursor.execute(f"UPDATE FlightTrip SET AvailableSeats = {max_capacity} WHERE Aircraft_id = {Aircraft_id};")
             self.db_connection.commit()
             # RETURN: AIRCRAFT ID
-            return int(Aircraft_id)
+            return Aircraft_id
         else:
             return "something went wrong, perhaps incorrect FlightTrip id"
 
@@ -71,12 +71,20 @@ class FlightTripManager:
                 newAircraft_id = self.assign_aircraft(FlightTrip_id)
 
             except:
-                return "This airplane hasn't been assigned an aircraft, we will do that now."
+                # CALL ASSIGN_AIRCRAFT() AGAIN
+                newAircraft_id = self.assign_aircraft(FlightTrip_id)
+                print("This airplane hasn't been assigned an aircraft, we will do that now.")
             else:
-                self.cursor.execute(f"UPDATE Aircraft SET AircraftStatus_id = 0 WHERE Aircraft_id = {Aircraft_id};")
+                self.cursor.execute(f"UPDATE Aircraft SET AircraftStatus_id = 1 WHERE Aircraft_id = {Aircraft_id};")
                 self.db_connection.commit()
             finally:
                 # RETURN: NEW AIRCRAFT ID
                 return newAircraft_id
         else:
             return "something went wrong, perhaps incorrect FlightTrip id"
+
+if __name__ == '__main__':
+    # FTM = FlightTripManager()
+    # print(FTM.create_flight_trip(datetime.now(), 'MAN', 230, 0.05))
+    # print(FTM.assign_aircraft(2))
+    # print(FTM.change_aircraft(1))
