@@ -12,7 +12,7 @@ class FlightTripManager(DBConnector):
         INSERT INTO FlightTrip (DepartureTime, ArrivalTime, DepartureAirport, ArrivalAirport, TicketPrice, TicketDiscount)
         VALUES ('{DepartureTime.strftime('%Y-%m-%d %H:%M:%S')}', '{ArrivalTime.strftime('%Y-%m-%d %H:%M:%S')}', 'LHR', '{ArrivalAirport}', {TicketPrice}, {TicketDiscount});
         """)
-        # self.db_connection.commit()
+        self.db_connection.commit()
         # Attempt to collect the last inserted flight trip identity
         FlightTrip_id = list(self.cursor.execute(f"SELECT FlightTrip_id FROM FlightTrip WHERE FlightTrip_id = @@IDENTITY;").fetchone())[0]
         # RETURN: FLIGHT TRIP ID
