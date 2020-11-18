@@ -4,14 +4,27 @@ import datetime
 class CreatePerson():
 
     def __init__(self):
-        # the following block of code is used to establish a pyodbc connection to northwind database
-        self.server = "databases1.spartaglobal.academy"
-        self.database = "Group_3_AirportDatabase"
-        self.username = "SA"
-        self.password = "Passw0rd2018"
-        self.db_connection = pyodbc.connect(
-            'DRIVER={ODBC Driver 17 for SQL Server};SERVER=' + self.server + ';DATABASE=' + self.database + ';UID=' + self.username + ';PWD=' + self.password)
-        self.cursor = self.db_connection.cursor()
+        # connect to  DB
+        self.server = "ldaijiw-micro.cdix33vx1qyf.eu-west-2.rds.amazonaws.com"
+        self.database = "test_database"
+        self.username = "ldaijiw"
+        self.password = "DreamJLMSU743"
+
+        self.start_connection()
+
+    def start_connection(self):
+        # server name, DB name, username, and password are required to connect with pyodbc
+        try:
+            self.db_connection = pyodbc.connect(
+                f"DRIVER=ODBC Driver 17 for SQL Server;SERVER={self.server};DATABASE={self.database};UID={self.username};PWD={self.password}"
+            )
+            self.cursor = self.db_connection.cursor()
+        except (ConnectionError, pyodbc.OperationalError, pyodbc.DatabaseError):
+            return "Connection Unsuccessful"
+
+        else:
+            # print(self.cursor.execute("SELECT * FROM test_table;").fetchall())
+            return "Connection Successful"
 
     # TABLES: PASSENGER
     def create_passenger(self, first_name, last_name, dob, gender, passport_number):
@@ -20,57 +33,70 @@ class CreatePerson():
 
         # SQL QUERY TO INPUT INTO PASSENGERS TABLE
         if not passport_number:
-            print("Please enter a passport number")
+            # print("Please enter a passport number")
             correct_details = False
+            return "Please enter a passport number"
         elif len(passport_number) > 9:
-            print("Make sure the passport number you have entered in less than 10 characters long")
+            # print("Make sure the passport number you have entered is less than 10 characters long")
             correct_details = False
+            return "Make sure the passport number you have entered is less than 10 characters long"
         else:
             pass
 
         if not first_name:
-            print("Please enter a first name")
+            # print("Please enter a first name")
             correct_details = False
+            return "Please enter a first name"
         elif len(first_name) > 32:
-            print("Make sure the first name you have entered is less than 33 characters long")
+            # print("Make sure the first name you have entered is less than 33 characters long")
             correct_details = False
+            return "Make sure the first name you have entered is less than 33 characters long"
         else:
             pass
 
         if not last_name:
-            print("Please enter a last name")
+            # print("Please enter a last name")
             correct_details = False
+            return "Please enter a last name"
         elif len(last_name) > 32:
-            print("Make sure the last name you have entered is less than 33 characters long")
+            # print("Make sure the last name you have entered is less than 33 characters long")
             correct_details = False
+            return "Make sure the last name you have entered is less than 33 characters long"
         else:
             pass
 
         if not dob:
-            print("Please enter a date of birth")
+            # print("Please enter a date of birth")
             correct_details = False
+            return "Please enter a date of birth"
         else:
             try:
                 format_check = datetime.datetime.strptime(dob, '%Y-%m-%d')
             except ValueError:
-                print("Please enter the date of birth in the format: YYY-MM-DD")
+                # print("Please enter the date of birth in the format: YYYY-MM-DD")
                 correct_details = False
+                return "Please enter the date of birth in the format: YYYY-MM-DD"
 
         if not gender:
-            print("Please enter a gender")
+            # print("Please enter a gender")
             correct_details = False
+            return "Please enter a gender"
         elif len(gender) > 16:
-            print("Make sure the gender entered is less than 17 characters long")
+            # print("Make sure the gender entered is less than 17 characters long")
             correct_details = False
+            return "Make sure the gender entered is less than 17 characters long"
         else:
             pass
 
         if correct_details == True:
-            self.cursor.execute(f"INSERT INTO Passengers (PassportNumber, FirstName, LastName, Gender, DateOfBirth) VALUES ('{passport_number}', '{first_name}', '{last_name}', '{gender}', {dob})")
+            self.cursor.execute(f"INSERT INTO Passengers (PassportNumber, FirstName, LastName, Gender, DateOfBirth) VALUES ('{passport_number}', '{first_name}', '{last_name}', '{gender}', '{dob}')")
             # OUTPUT: SUCCESSFUL MESSAGE
-            print("Passenger has been successfully added")
+            # print("Passenger has been successfully added")
+            self.db_connection.commit()
+            return "Passenger has been successfully added"
         else:
-            print("Incorrect Details. Please make sure you have entered your details correctly")
+            # print("Incorrect Details. Please make sure you have entered your details correctly")
+            return "Incorrect Details. Please make sure you have entered your details correctly"
 
 
 
@@ -84,7 +110,7 @@ class CreatePerson():
         if not job_id:
             print("Please enter a job ID")
             correct_details = False
-        elif job_id.isdigit() == False:
+        elif isinstance(job_id, int) == False:
             print("Please enter the job ID in digits")
             correct_details = False
         else:
@@ -157,10 +183,23 @@ class CreatePerson():
 
 
         if correct_details == True:
-            self.cursor.execute(f"INSERT INTO Staff (Job_id, Username, FirstName, LastName, UserPassword, PassportNumber, OnLocation) VALUES ({job_id}, '{user_name}', '{first_name}', '{last_name}', {gender}', '{pass_word}', '{passport_number}', {on_location})")
+            self.cursor.execute(f"INSERT INTO Staff (Job_id, Username, FirstName, LastName, Gender, UserPassword, PassportNumber, OnLocation) VALUES ({job_id}, '{user_name}', '{first_name}', '{last_name}', '{gender}', '{pass_word}', '{passport_number}', {on_location})")
             # OUTPUT: SUCCESSFUL MESSAGE
             print("Staff has been successfully added")
+            self.db_connection.commit()
         else:
             print("Incorrect Details. Please make sure you have entered your details correctly")
 
+    def dummy_passenger(self):
+        print(self.cursor.execute("SELECT * FROM Passengers").fetchall())
 
+    def dummy_staff(self):
+        print(self.cursor.execute("SELECT * FROM Staff").fetchall())
+
+# test_run = CreatePerson()
+# test_run.create_passenger('John', 'Doe', '1999-01-01', 'Male', '12345678')
+# test_run.create_staff(2, 'Jane', 'Doe', 'JDoe123', 'JDoePW', '12987', 'Female', 1)
+# test_run.dummy_passenger()
+# test_run.dummy_staff()
+
+# job_id, first_name, last_name, user_name, pass_word, passport_number, gender, on_location):
