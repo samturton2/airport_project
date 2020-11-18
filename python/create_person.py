@@ -95,8 +95,8 @@ class CreatePerson():
             self.db_connection.commit()
             return "Passenger has been successfully added"
         else:
-            # print("Incorrect Details. Please make sure you have entered your details correctly")
-            return "Please try again"
+            print("Please try again")
+            # return "Please try again"
 
 
 
@@ -203,22 +203,22 @@ class CreatePerson():
             # OUTPUT: SUCCESSFUL MESSAGE
             # print("Staff has been successfully added")
             self.db_connection.commit()
-            return "Staff has been successfully added"
+            return "Staff member has been successfully added"
         else:
-            # print("Please try again")
-            return "Please try again"
+            print("Please try again")
+            # return "Please try again"
 
 
 # Don't need to test these functions
-    def dummy_passenger(self):
-        passenger_table = self.cursor.execute("SELECT * FROM Passengers").fetchall()
-        for row in passenger_table:
-            print(row)
-
-    def dummy_staff(self):
-        staff_table = self.cursor.execute("SELECT * FROM Staff").fetchall()
-        for row in staff_table:
-            print(row)
+#     def dummy_passenger(self):
+#         passenger_table = self.cursor.execute("SELECT * FROM Passengers").fetchall()
+#         for row in passenger_table:
+#             print(row)
+#
+#     def dummy_staff(self):
+#         staff_table = self.cursor.execute("SELECT * FROM Staff").fetchall()
+#         for row in staff_table:
+#             print(row)
 
 
 # test_run = CreatePerson()
