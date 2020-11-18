@@ -21,6 +21,7 @@
 
 ########
 import pyodbc
+import random
 
 class FlightAttendees:
     def __init__(self, server, database, username, password):
@@ -62,7 +63,7 @@ class FlightAttendees:
 
 
     # Checks which staff is available to be assigned to a flight
-    # Returns a list
+    # Returns a list of tuples of (Staff_id, FirstName, LastName)
     def check_staff_availability(self):
         query = f"""
         SELECT Staff_id, FirstName, LastName
@@ -70,7 +71,7 @@ class FlightAttendees:
         WHERE OnLocation = 1;
         """
 
-        list_of_available_staff = self.execute(query)
+        list_of_available_staff = self.cursor.execute(query)
         retr_staff = []
         for row in list_of_available_staff:
             retr_staff.append(row)
@@ -89,17 +90,19 @@ class FlightAttendees:
             SET OnLocation = 0
             WHERE Staff_id = {staff_id}
             """
-        
+            self.cursor.execute(query_for_onlocation)
+
         # Adds the flight staff with flight id to the FlightStaff table
         for staff_id in list_of_staff_ids:
             query_for_insertion = f"""
             INSERT INTO FlightStaff (FlightTrip_id, Staff_id)
             VALUES ({flight_trip_id}, {staff_id})
             """
+            self.cursor.execute(query_for_insertion)
 
         # Return the list of names of staff added
         return list_of_staff_ids
-        
+
 
     # Allows use to see the attendee list in terminal
     # This is an extension of flight_attendees_list
@@ -112,8 +115,12 @@ class FlightAttendees:
         for person in tuple[1]:
             print(person)
 
+
 if __name__ == "__main__":
     server = "JaredPC\JS_1"
     database = "Airport"
     username = "sa"
     password = "passw0rd"
+
+    f = FlightAttendees(server, database, username, password)
+    x = f.assign_staff_to_flight_randomly(1)
