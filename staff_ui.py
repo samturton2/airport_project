@@ -1,4 +1,5 @@
 import pyodbc
+from datetime import datetime
 from classes.booking_manager import BookingManager
 from classes.flight_trip_manager import FlightTripManager
 from classes.database_connector import DBConnector
@@ -64,7 +65,7 @@ class StaffUI_1(BookingManager, FlightTripManager):
 
 
             if choice == "3":
-                pass
+                self.create_new_flight_trip()
 
 
             if choice == "4":
@@ -91,6 +92,7 @@ class StaffUI_1(BookingManager, FlightTripManager):
                 pass
 
 
+    # OPTION 1
     def create_new_staff_member(self):
         # INPUT: JOB_ID, FIRST NAME, LAST NAME, USERNAME, PASSWORD, PASSPORT NUMBER, GENDER, ON LOCATION
         try:
@@ -100,14 +102,31 @@ class StaffUI_1(BookingManager, FlightTripManager):
             return print("Please input a number")
         firstname = input("Input first name: ").capitalize().strip()
         lastname = input("Input last name: ").capitalize().strip()
-        username = input("Choose a username: ")
-        password = input("Create a password: ")
-        passportnumber = input("Input the 9-digit Passport number: ")
-        gender = input("Input gender: ")
+        username = input("Choose a username: ").strip()
+        password = input("Create a password: ").strip()
+        passportnumber = input("Input the 9-digit Passport number: ").strip()
+        gender = input("Input gender: ").capitalize()
         on_location = 1
 
         print(self.create_staff(job, firstname, lastname, username, password, passportnumber, gender, on_location))
 
 
+    # OPTION 2
+
+    # OPTION 3
+    def create_new_flight_trip(self):
+        # change this
+        departuredate = datetime.now()
+        arrivalairport = input("\nChoose an airport to arrive at: ").upper().strip()
+        try:
+            ticketprice = input("How much are tickets? ")
+            ticketdiscount = input("What's the discount? ")
+            ticketprice = int(ticketprice)
+            ticketdiscount = int(ticketdiscount)
+        except:
+            return print("\nTry again")
+
+        self.create_flight_trip(departuredate, arrivalairport, ticketprice, ticketdiscount)
+        print("Added!")
 
 f = StaffUI_1()
