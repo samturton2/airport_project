@@ -48,11 +48,11 @@ class LogIn(DBConnector):
             # LOAD IN THE RELAVENT PASSENGERS AND STAFF LOG IN DETAILS
             if self.staff:
                 # IF STAFF ALSO LOAD IN THERE RANK
-                login_details = self.cursor.execute(f"SELECT Username, UserPassword, Rank FROM Staff WHERE Username = '{username}';").fetchone()
+                login_details = self.cursor.execute(f"SELECT StaffUsername, StaffPassword, StaffLevel FROM StaffLogins WHERE StaffUsername = '{username}';").fetchone()
             elif self.passenger:
-                login_details = self.cursor.execute(f"SELECT Username, UserPassword FROM Passenger WHERE Username = '{username}';").fetchone()
+                login_details = self.cursor.execute(f"SELECT PassengerUsername, PassengerPassword FROM PassengerLogins WHERE PassengerUsername = '{username}';").fetchone()
             else:
-                print("Need to select passenger or staff")
+                login_details = [0]
 
             if len(login_details) == 0:
                 print("\nUsername not recognised!\n")
@@ -77,7 +77,7 @@ class LogIn(DBConnector):
                         # RUN STAFF 2 CAPABILITIES
                         StaffUI_2()
                 elif self.passenger:
-                    # RUN PASSENGER CAPABILITES
+                    # RUN PASSENGER CAPABILITIES
                     Passenger()
 
 
