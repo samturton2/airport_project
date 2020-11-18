@@ -207,23 +207,3 @@ class CreatePerson():
         else:
             print("Please try again")
             # return "Please try again"
-
-
-# Don't need to test these functions
-#     def dummy_passenger(self):
-#         passenger_table = self.cursor.execute("SELECT * FROM Passengers").fetchall()
-#         for row in passenger_table:
-#             print(row)
-#
-#     def dummy_staff(self):
-#         staff_table = self.cursor.execute("SELECT * FROM Staff").fetchall()
-#         for row in staff_table:
-#             print(row)
-
-
-# test_run = CreatePerson()
-# test_run.create_passenger('John', 'Doe', '1999-01-01', 'Male', '12345678')
-# test_run.create_staff(2, 'Jane', 'Doe', 'JDoe123', 'JDoePW', '12987', 'Female', 1)
-# test_run.dummy_passenger()
-# test_run.dummy_staff()
-
