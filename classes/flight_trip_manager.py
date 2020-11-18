@@ -1,4 +1,8 @@
-from database_connector import DBConnector
+if __name__ == "__main__":
+    from database_connector import DBConnector
+else:
+    from classes.database_connector import DBConnector
+    
 from datetime import datetime, timedelta
 
 class FlightTripManager(DBConnector):
@@ -12,7 +16,7 @@ class FlightTripManager(DBConnector):
         INSERT INTO FlightTrip (DepartureTime, ArrivalTime, DepartureAirport, ArrivalAirport, TicketPrice, TicketDiscount)
         VALUES ('{DepartureTime.strftime('%Y-%m-%d %H:%M:%S')}', '{ArrivalTime.strftime('%Y-%m-%d %H:%M:%S')}', 'LHR', '{ArrivalAirport}', {TicketPrice}, {TicketDiscount});
         """)
-        # self.db_connection.commit()
+        self.db_connection.commit()
         # Attempt to collect the last inserted flight trip identity
         FlightTrip_id = list(self.cursor.execute(f"SELECT FlightTrip_id FROM FlightTrip WHERE FlightTrip_id = @@IDENTITY;").fetchone())[0]
         # RETURN: FLIGHT TRIP ID
@@ -55,10 +59,9 @@ class FlightTripManager(DBConnector):
             # CHECK THAT IT's A VALID FLIGHT TRIP ID
             try:
                 # COLLECT CURRENT AIRPLANE ID IF ITS BEEN ASSIGNED AN AIRCRAFT
-                Aircraft_id = list(self.cursor.execute(f"SELECT Aircraft_id FROM FlightTrip_id WHERE FlightTrip_id = {FlightTrip_id};").fetchone())[0]
+                Aircraft_id = list(self.cursor.execute(f"SELECT Aircraft_id FROM FlightTrip WHERE FlightTrip_id = {FlightTrip_id};").fetchone())[0]
                 # CALL ASSIGN_AIRCRAFT() AGAIN
                 newAircraft_id = self.assign_aircraft(FlightTrip_id)
-
             except:
                 # CALL ASSIGN_AIRCRAFT() AGAIN
                 newAircraft_id = self.assign_aircraft(FlightTrip_id)
@@ -230,3 +233,6 @@ class FlightTripManager(DBConnector):
     def calculate_ticket_income(self, flight_trip_id):
         ticket_sum = self.cursor.execute(f"SELECT SUM(PricePaid) FROM TicketDetails WHERE FlightTrip_id = {flight_trip_id}").fetchone()
         return f"The total income from ticket sales for flight {flight_trip_id} is: £{ticket_sum[0]}"
+
+# test = FlightTripManager()
+# print(test.create_flight_trip(datetime.now(), "EDI", 200.00, 20))

@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, redirect, url_for, render_template, request, session
 from classes.Log_in_display import LogIn
+from classes.flight_trip_manager import FlightTripManager
 app = Flask(__name__)
 
 @app.route("/")
@@ -59,12 +60,46 @@ def flighttripmanager():
     return render_template('ftm_home.html')
 
 
+@app.route("/ftm/assignaircraft/", methods = ["GET", "POST"])
+def assignaircraft():
+    if request.method == "POST":
+        r_flight_trip_id = request.form['flight_trip_id']
+
+        ftm = FlightTripManager()
+        return_value = ftm.assign_aircraft(r_flight_trip_id)
+
+        if type(return_value) == int:
+            return render_template("ftm_success.html")
+   
+    return render_template("ftm_assignaircraft.html")
+
+
+@app.route("/ftm/changeaircraft/", methods = ["GET", "POST"])
+def changeaircraft():
+    if request.method == "POST":
+        r_flight_trip_id = request.form['flight_trip_id']
+
+        ftm = FlightTripManager()
+        return_value = ftm.change_aircraft(r_flight_trip_id)
+        print(return_value)
+        if type(return_value) == int:
+            return render_template("ftm_success.html")
+
+    return render_template("ftm_changeaircraft.html")
+
+
+@app.route("/ftm/success")
+def ftm_success():
+    return render_template("ftm_success.html")
+
+
 '''
 BOOKING MANAGER
 '''
 @app.route("/bm/")
 def bookingmanager():
     return render_template('bm_home.html')
+
 
 
 
