@@ -56,17 +56,22 @@ class FlightTripManager:
             # RETURN: AIRCRAFT ID
             return int(Aircraft_id)
         else:
-            print("something went wrong, perhaps incorrect FlightTrip id")
+            return "something went wrong, perhaps incorrect FlightTrip id"
 
     # TABLES: FLIGHT TRIP, AIRCRAFT
     def change_aircraft(self, FlightTrip_id):
         # INPUT: FLIGHT TRIP ID
-
-        # CHANGE AIRPLANE STATUS
-
+        # INPUT: FLIGHT TRIP ID
+        trip_id = self.cursor.execute(f"SELECT FlightTrip_id FROM FlightTrip WHERE FlightTrip_id = {FlightTrip_id} ;")
+        # CHECK THAT IT's A VALID FLIGHT TRIP ID
+        if len(list(trip_id)) == 1:
+        try:
+            # COLLECT CURRENT AIRPLANE ID IF ITS BEEN ASSIGNED AN AIRPLANE
+            Aircraft_id = list(self.cursor.execute("SELECT Aircraft_id FROM FlightTrip_id WHERE AircraftStatus_id = 0;").fetchone())[0]
+        Except
         # CALL ASSIGN_AIRCRAFT() AGAIN
-        new_aircraft_id = self.assign_aircraft(FlightTrip_id)
+        newAircraft_id = self.assign_aircraft(FlightTrip_id)
         # NEW PLANE ID = assign_aircraft()
 
         # RETURN: NEW AIRCRAFT ID
-        return new_aircraft_id
+        return newAircraft_id
