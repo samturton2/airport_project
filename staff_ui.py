@@ -60,7 +60,7 @@ class StaffUI_1(BookingManager, FlightTripManager):
 
 
             if choice == "2":
-                pass
+                self.create_new_passenger()
 
 
             if choice == "3":
@@ -84,11 +84,11 @@ class StaffUI_1(BookingManager, FlightTripManager):
 
 
             if choice == "8":
-                pass
+                self.calculate_income_from_flight()
 
 
             if choice == "9":
-                pass
+                self.print_list_flight_names()
 
 
     def create_new_staff_member(self):
@@ -109,5 +109,25 @@ class StaffUI_1(BookingManager, FlightTripManager):
         print(self.create_staff(job, firstname, lastname, username, password, passportnumber, gender, on_location))
 
 
+    def create_new_passenger(self):
+        # INPUT: FIRST NAME, LAST NAME, DOB, GENDER, PASSPORT NUMBER
+
+        firstname = input("Input first name: ").capitalize().strip()
+        lastname = input("Input last name: ").capitalize().strip()
+        dob = input("Enter date of birth (YYYY-MM-DD): ")
+        gender = input("Input gender: ")
+        passportnumber = input("Input the 9-digit Passport number: ")
+
+        print(self.create_passenger(firstname, lastname, dob, gender, passportnumber))
+
+
+    def calculate_income_from_flight(self):
+        flight_trip_id = int(input("Enter FlightTrip_id: "))
+        print(self.calculate_ticket_income(flight_trip_id))
+
+
+    def print_list_flight_names(self):
+        flight_trip_id = int(input("Enter FlightTrip_id: "))
+        print(self.flight_attendees_list(flight_trip_id))
 
 f = StaffUI_1()
