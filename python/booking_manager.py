@@ -42,7 +42,7 @@ class BookingManager:
 
         # Check passenger_id is valid
         for passenger_id in passenger_id_list:
-            passenger_id_exists = True if self.cursor.execute(f"SELECT COUNT(*) FROM Passengers WHERE Passebger_id = {passenger_id}").fetchone()[0] == 1 else False
+            passenger_id_exists = True if self.cursor.execute(f"SELECT COUNT(*) FROM Passengers WHERE Passenger_id = {passenger_id}").fetchone()[0] == 1 else False
             if not passenger_id_exists:
                 return "INVALID PASSENGER ID"
 
