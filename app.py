@@ -63,7 +63,7 @@ def flighttripmanager():
 BOOKING MANAGER
 '''
 @app.route("/bm/")
-def flighttripmanager():
+def bookingmanager():
     return render_template('bm_home.html')
 
 
