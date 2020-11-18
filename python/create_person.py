@@ -36,7 +36,7 @@ class CreatePerson():
             # print("Please enter a passport number")
             correct_details = False
             return "Please enter a passport number"
-        elif len(passport_number) > 9:
+        elif len(str(passport_number)) > 9:
             # print("Make sure the passport number you have entered is less than 10 characters long")
             correct_details = False
             return "Make sure the passport number you have entered is less than 10 characters long"
@@ -122,7 +122,7 @@ class CreatePerson():
             # print("Please enter a username")
             correct_details = False
             return "Please enter a username"
-        elif len(passport_number) > 16:
+        elif len(user_name) > 16:
             # print("Make sure the username is less than 17 characters long")
             correct_details = False
             return "Make sure the username is less than 17 characters long"
@@ -134,7 +134,7 @@ class CreatePerson():
             # print("Please enter a first name")
             correct_details = False
             return "Please enter a first name"
-        elif len(passport_number) > 32:
+        elif len(first_name) > 32:
             # print("Make sure the first name you have entered is less than 33 characters long")
             correct_details = False
             return "Make sure the first name you have entered is less than 33 characters long"
@@ -146,10 +146,10 @@ class CreatePerson():
             # print("Please enter a last name")
             correct_details = False
             return "Please enter a last name"
-        elif len(passport_number) > 40:
-            # print("Make sure the first name you have entered is less than 41 characters long")
+        elif len(last_name) > 40:
+            # print("Make sure the last name you have entered is less than 41 characters long")
             correct_details = False
-            return "Make sure the first name you have entered is less than 41 characters long"
+            return "Make sure the last name you have entered is less than 41 characters long"
         else:
             pass
 
@@ -168,14 +168,14 @@ class CreatePerson():
             # print("Please enter a passport number")
             correct_details = False
             return "Please enter a passport number"
-        elif len(passport_number) > 9:
+        elif len(str(passport_number)) > 9:
             # print("Make sure the passport number you have entered in less than 10 characters long")
             correct_details = False
             return "Make sure the passport number you have entered in less than 10 characters long"
         else:
             pass
 
-        if not on_location:
+        if len(str(on_location)) == 0:
             # print("Please confirm is the staff member is on location")
             correct_details = False
             return "Please confirm is the staff member is on location"
