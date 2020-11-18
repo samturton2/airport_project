@@ -34,10 +34,11 @@ class FlightTripManager:
 
     # TABLES: FLIGHT TRIP, AIRCRAFT
     def assign_aircraft(self, FlightTrip_id):
+        try:
         # INPUT: FLIGHT TRIP ID
-        trip_id = self.cursor.execute(f"SELECT FlightTrip_id FROM FlightTrip WHERE FlightTrip_id = {FlightTrip_id} ;")
-        # CHECK THAT IT's A VALID FLIGHT TRIP ID
-        if len(list(trip_id)) == 1:
+            self.cursor.execute(f"SELECT FlightTrip_id FROM FlightTrip WHERE FlightTrip_id = {FlightTrip_id} ;")
+            # CHECK THAT IT's A VALID FLIGHT TRIP ID
+
             # FIND FIRST PLANE THAT IS AVAILABLE AND IN CORRECT LOCATION
             Aircraft_id = list(self.cursor.execute("SELECT Aircraft_id FROM Aircraft WHERE AircraftStatus_id = 1;").fetchone())[0]
 
@@ -55,15 +56,15 @@ class FlightTripManager:
             self.db_connection.commit()
             # RETURN: AIRCRAFT ID
             return Aircraft_id
-        else:
+        except:
             return "something went wrong, perhaps incorrect FlightTrip id"
 
     # TABLES: FLIGHT TRIP, AIRCRAFT
     def change_aircraft(self, FlightTrip_id):
+        try:
         # INPUT: FLIGHT TRIP ID
-        trip_id = self.cursor.execute(f"SELECT FlightTrip_id FROM FlightTrip WHERE FlightTrip_id = {FlightTrip_id};")
-        # CHECK THAT IT's A VALID FLIGHT TRIP ID
-        if len(list(trip_id)) == 1:
+            self.cursor.execute(f"SELECT FlightTrip_id FROM FlightTrip WHERE FlightTrip_id = {FlightTrip_id};")
+            # CHECK THAT IT's A VALID FLIGHT TRIP ID
             try:
                 # COLLECT CURRENT AIRPLANE ID IF ITS BEEN ASSIGNED AN AIRCRAFT
                 Aircraft_id = list(self.cursor.execute(f"SELECT Aircraft_id FROM FlightTrip_id WHERE FlightTrip_id = {FlightTrip_id};").fetchone())[0]
@@ -73,18 +74,17 @@ class FlightTripManager:
             except:
                 # CALL ASSIGN_AIRCRAFT() AGAIN
                 newAircraft_id = self.assign_aircraft(FlightTrip_id)
-                print("This airplane hasn't been assigned an aircraft, we will do that now.")
             else:
                 self.cursor.execute(f"UPDATE Aircraft SET AircraftStatus_id = 1 WHERE Aircraft_id = {Aircraft_id};")
                 self.db_connection.commit()
             finally:
                 # RETURN: NEW AIRCRAFT ID
                 return newAircraft_id
-        else:
+        except:
             return "something went wrong, perhaps incorrect FlightTrip id"
 
-if __name__ == '__main__':
-    # FTM = FlightTripManager()
-    # print(FTM.create_flight_trip(datetime.now(), 'MAN', 230, 0.05))
-    # print(FTM.assign_aircraft(2))
-    # print(FTM.change_aircraft(1))
+# if __name__ == '__main__':
+#     FTM = FlightTripManager()
+#     print(FTM.create_flight_trip(datetime.now(), 'MAN', 230, 0.05))
+#     print(FTM.assign_aircraft(2))
+#     print(FTM.change_aircraft(1))
