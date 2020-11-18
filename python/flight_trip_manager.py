@@ -7,10 +7,10 @@ from datetime import datetime, timedelta
 
 class FlightTripManager:
     def __init__(self):
-        server = "databases1.spartaglobal.academy"
-        database = "Group_3_AirportDatabase"
-        username = "SA"
-        password = "Passw0rd2018"
+        server = "ldaijiw-micro.cdix33vx1qyf.eu-west-2.rds.amazonaws.com"
+        database = "test_database"
+        username = "ldaijiw"
+        password = "DreamJLMSU743"
         self.db_connection = pyodbc.connect(f'DRIVER=ODBC Driver 17 for SQL Server;SERVER={server};DATABASE={database};UID={username};PWD={password}')
         # create a class variable that's the cursor
         self.cursor = self.db_connection.cursor()
