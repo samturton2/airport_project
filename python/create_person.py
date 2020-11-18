@@ -96,7 +96,7 @@ class CreatePerson():
             return "Passenger has been successfully added"
         else:
             # print("Incorrect Details. Please make sure you have entered your details correctly")
-            return "Incorrect Details. Please make sure you have entered your details correctly"
+            return "Please try again"
 
 
 
@@ -188,7 +188,7 @@ class CreatePerson():
             print("Staff has been successfully added")
             self.db_connection.commit()
         else:
-            print("Incorrect Details. Please make sure you have entered your details correctly")
+            print("Please try again")
 
     def dummy_passenger(self):
         print(self.cursor.execute("SELECT * FROM Passengers").fetchall())
