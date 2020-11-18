@@ -1,6 +1,9 @@
 import pyodbc
 from database_connector import DBConnector
-from passenger_ui import Passenger
+from passenger_ui import Passenger # import passengers class
+import pandas
+from tabulate import tabulate
+
 
 class LogIn(DBConnector):
     def __init__(self):
