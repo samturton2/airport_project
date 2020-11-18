@@ -34,6 +34,19 @@ class BookingManager:
     # TABLES: TICKET DETAILS, FLIGHT TRIP, PASSENGERS
     # INPUT: FLIGHT TRIP ID, LIST OF PASSENGER ID
     def make_booking(self, flight_trip_id, passenger_id_list):
+
+        # Check flight_trip_id is valid
+        flight_trip_exists = True if self.cursor.execute(f"SELECT COUNT(*) FROM FlightTrip WHERE FlightTrip_id = {flight_trip_id}").fetchone()[0] == 1 else False
+        if not flight_trip_exists:
+            return "INVALID FLIGHT TRIP ID"
+
+        # Check passenger_id is valid
+        for passenger_id in passenger_id_list:
+            passenger_id_exists = True if self.cursor.execute(f"SELECT COUNT(*) FROM Passengers WHERE Passebger_id = {passenger_id}").fetchone()[0] == 1 else False
+            if not passenger_id_exists:
+                return "INVALID PASSENGER ID"
+
+
         # CHECK HOW MANY SEATS THEY WILL NEED (BABY?)
         passenger_discounts = []
         passengers_need_seat = []
@@ -72,6 +85,7 @@ class BookingManager:
         SET AvailableSeats = {seats_available - seats_required}
         WHERE FlightTrip_id = {flight_trip_id}
         ''')
+        self.db_connection.commit()
         
         # FOR EACH PASSENGER
         # ADD COST OF TICKET TO TICKET DETAILS
@@ -98,6 +112,7 @@ class BookingManager:
             INSERT INTO TicketDetails (Passenger_id, FlightTrip_id, PricePaid)
             VALUES({passenger_id}, {flight_trip_id}, {passenger_prices[i]})
             ''')
+            self.db_connection.commit()
 
             # retrieve ticket id and append to list
             ticket_id = self.cursor.execute(f'''
@@ -109,7 +124,10 @@ class BookingManager:
             ticket_id_list.append(ticket_id)
 
         # RETURN: TICKET ID, COST OF TICKET (ANY DISCOUNT APPLIED), EXTRA FLIGHT DETAILS
-        return zip(ticket_id_list, passenger_prices)
+
+        ticket_info_dict = {ticket_id: passenger_prices[i] for i, ticket_id in enumerate(ticket_id_list)}
+
+        return ticket_info_dict
 
 
     def test(self):
@@ -151,7 +169,7 @@ class BookingManager:
         # WHERE sp.name = SUSER_SNAME();
         # ''')))
         #self.cursor.execute("USE test_db;")
-        print(self.cursor.execute("SELECT * FROM test_table;").fetchall())
+        print(self.cursor.execute("SELECT * FROM FlightTrip;").fetchall())
         #self.db_connection.commit()
 
 if __name__ == "__main__":
