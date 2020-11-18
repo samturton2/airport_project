@@ -6,7 +6,7 @@ class BookingManager:
 
         # connect to  DB
         self.server = "ldaijiw-micro.cdix33vx1qyf.eu-west-2.rds.amazonaws.com"
-        self.database = "test_db"
+        self.database = "test_database"
         self.username = "ldaijiw"
         self.password = "DreamJLMSU743"
 
@@ -15,10 +15,18 @@ class BookingManager:
 
     def start_connection(self):
         # server name, DB name, username, and password are required to connect with pyodbc
-        self.db_connection = pyodbc.connect(
-            f"DRIVER=ODBC Driver 17 for SQL Server;SERVER={self.server};DATABASE={self.database};UID={self.username};PWD={self.password}"
-        )
-        self.cursor = self.db_connection.cursor()
+        try:
+            self.db_connection = pyodbc.connect(
+                f"DRIVER=ODBC Driver 17 for SQL Server;SERVER={self.server};DATABASE={self.database};UID={self.username};PWD={self.password}"
+            )
+            self.cursor = self.db_connection.cursor()
+        except (ConnectionError, pyodbc.OperationalError, pyodbc.DatabaseError):
+            return "Connection Unsuccessful"
+        
+        else:
+            return "Connection Successful"
+
+        
 
 
 
@@ -143,7 +151,7 @@ class BookingManager:
         # WHERE sp.name = SUSER_SNAME();
         # ''')))
         #self.cursor.execute("USE test_db;")
-        print(self.cursor.execute("SELECT * FROM Passengers;").fetchall())
+        print(self.cursor.execute("SELECT * FROM test_table;").fetchall())
         #self.db_connection.commit()
 
 if __name__ == "__main__":
