@@ -18,10 +18,8 @@
 #     # FIND ALL PASSENGERS/STAFF ON FLIGHT
 # 
 #     # RETURN: FLIGHT ATTENDEES LIST
-
-########
 import pyodbc
-import random
+
 
 class FlightAttendees:
     def __init__(self, server, database, username, password):
@@ -35,15 +33,16 @@ class FlightAttendees:
         self.cursor = self.connection.cursor()
 
 
+    # CHECKED LOCALLY
     # The return object is a tuple consisting of Passenger Names and Staff Names in lists
     def flight_attendees_list(self, flight_trip_id):
         passenger_query = f"""
-        SELECT Passengers.FirstName, Passengers.LastName
+        SELECT Passengers.Passenger_id, Passengers.FirstName, Passengers.LastName
         FROM FlightTrip
         INNER JOIN TicketDetails ON TicketDetails.FlightTrip_id = FlightTrip.FlightTrip_id
         INNER JOIN Passengers ON Passengers.Passenger_id = TicketDetails.Passenger_id
         WHERE FlightTrip.FlightTrip_id = {flight_trip_id};"""
-        list_of_passengers = self.execute(passenger_query)
+        list_of_passengers = self.cursor.execute(passenger_query)
         retr_passengers = []
         for row in list_of_passengers:
             retr_passengers.append(row)
@@ -54,7 +53,7 @@ class FlightAttendees:
         INNER JOIN FlightStaff ON FlightStaff.FlightTrip_id = FlightTrip.FlightTrip_id
         INNER JOIN Staff ON Staff.Staff_id = FlightStaff.Staff_id
         WHERE FlightTrip.FlightTrip_id = {flight_trip_id};"""
-        list_of_staff = self.execute(staff_query)
+        list_of_staff = self.cursor.execute(staff_query)
         retr_staff = []
         for row in list_of_staff:
             retr_staff.append(row)
@@ -62,6 +61,7 @@ class FlightAttendees:
         return retr_passengers, retr_staff
 
 
+    # CHECKED LOCALLY
     # Checks which staff is available to be assigned to a flight
     # Returns a list of tuples of (Staff_id, FirstName, LastName)
     def check_staff_availability(self):
@@ -80,6 +80,7 @@ class FlightAttendees:
         return retr_staff
 
 
+    # CHECKED LOCALLY
     # Assign staff to a flight, updates FlightStaff, change corresponding staff OnLocation to 0
     # The list_of_staff should be a list of staff_id as it's the PK
     def assign_staff_to_flight(self, flight_trip_id, list_of_staff_ids):
@@ -91,6 +92,7 @@ class FlightAttendees:
             WHERE Staff_id = {staff_id}
             """
             self.cursor.execute(query_for_onlocation)
+            self.connection.commit()
 
         # Adds the flight staff with flight id to the FlightStaff table
         for staff_id in list_of_staff_ids:
@@ -99,11 +101,13 @@ class FlightAttendees:
             VALUES ({flight_trip_id}, {staff_id})
             """
             self.cursor.execute(query_for_insertion)
+            self.connection.commit()
 
         # Return the list of names of staff added
         return list_of_staff_ids
 
 
+    # CHECKED LOCALLY
     # Allows use to see the attendee list in terminal
     # This is an extension of flight_attendees_list
     # It takes that return value and prints it
@@ -120,7 +124,4 @@ if __name__ == "__main__":
     server = "JaredPC\JS_1"
     database = "Airport"
     username = "sa"
-    password = "passw0rd"
-
-    f = FlightAttendees(server, database, username, password)
-    x = f.assign_staff_to_flight_randomly(1)
+    password = "passw0rd

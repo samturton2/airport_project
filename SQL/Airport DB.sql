@@ -1,3 +1,5 @@
+-- This was the first iteration of our database, use `Airport_DB_revised` to create a database and tables
+
 CREATE DATABASE Group_3_AirportDatabase
 USE Group_3_AirportDatabase
 

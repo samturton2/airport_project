@@ -3,8 +3,9 @@
 -- Removed some NOT NULL restrictions in the FlightTrip table
         -- We can create flights without requiring an Aircraft_id and availableseats
 
-CREATE DATABASE Group_3_AirportDatabase;
-USE Group_3_AirportDatabase;
+CREATE DATABASE Airport;
+USE Airport;
+
 
 DROP TABLE FlightStaff;
 DROP TABLE TicketDetails;
@@ -16,6 +17,7 @@ DROP TABLE Airports;
 DROP TABLE Staff;
 DROP TABLE Jobs;
 DROP TABLE Passengers;
+
 
 SELECT * FROM Passengers;
 SELECT * FROM TicketDetails;
