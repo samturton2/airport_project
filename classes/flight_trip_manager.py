@@ -1,4 +1,4 @@
-from database_connector import DBConnector
+from classes.database_connector import DBConnector
 from datetime import datetime, timedelta
 
 class FlightTripManager(DBConnector):

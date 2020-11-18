@@ -1,6 +1,6 @@
 import pyodbc
 from datetime import date
-from database_connector import DBConnector
+from classes.database_connector import DBConnector
 
 class BookingManager(DBConnector):
     
