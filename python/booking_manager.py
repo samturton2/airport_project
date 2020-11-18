@@ -103,7 +103,7 @@ class BookingManager:
         ''').fetchone()[0]
 
         # calculate passenger prices to pay after considering if they're eligible for discount
-        passenger_prices = [ticket_price - (ticket_price * ticket_discount * passenger_discount) for passenger_discount in passenger_discounts]
+        passenger_prices = [float(ticket_price) - (float(ticket_price) * float(ticket_discount) * passenger_discount) for passenger_discount in passenger_discounts]
 
         # ADD FLIGHT TRIP ID/PASSENGER ID TO TICKET DETAILS TABLE
         ticket_id_list = []
@@ -174,5 +174,5 @@ class BookingManager:
 
 if __name__ == "__main__":
     new_bm = BookingManager()
-    new_bm.test()
-    #new_bm.make_booking(1, [1, 2, 3])
+    #new_bm.test()
+    new_bm.make_booking(1, [1, 2, 3])
