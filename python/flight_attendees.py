@@ -121,7 +121,4 @@ class FlightAttendees:
 
 
 if __name__ == "__main__":
-    server = "JaredPC\JS_1"
-    database = "Airport"
-    username = "sa"
-    password = "passw0rd
+    pass
