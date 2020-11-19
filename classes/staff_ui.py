@@ -10,7 +10,7 @@ class StaffUI_1(BookingManager, FlightTripManager):
     def __init__(self):
         # connect to  DB
         self.server = "ldaijiw-micro.cdix33vx1qyf.eu-west-2.rds.amazonaws.com"
-        self.database = "test_sam"
+        self.database = "db_with_logins"
         self.username = "ldaijiw"
         self.password = "DreamJLMSU743"
         self.start_connection()
