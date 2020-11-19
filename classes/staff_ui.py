@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 from booking_manager import BookingManager
 from flight_trip_manager import FlightTripManager
 from database_connector import DBConnector
+from cryptic import Cryptic
 
 def clear():
     if name == "nt":
