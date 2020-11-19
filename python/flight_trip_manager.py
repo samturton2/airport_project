@@ -35,27 +35,31 @@ class FlightTripManager:
     # TABLES: FLIGHT TRIP, AIRCRAFT
     def assign_aircraft(self, FlightTrip_id):
         try:
-        # INPUT: FLIGHT TRIP ID
+        # CHECK THAT IT's A VALID FLIGHT TRIP ID
             self.cursor.execute(f"SELECT FlightTrip_id FROM FlightTrip WHERE FlightTrip_id = {FlightTrip_id} ;")
-            # CHECK THAT IT's A VALID FLIGHT TRIP ID
+            # SEE IF THERE ARE AIRCRAFTS FREE
+            aircrafts_free = list(self.cursor.execute(f"select Aircraft_id FROM Aircraft WHERE AircraftStatus_id = 1;").fetchall())
 
-            # FIND FIRST PLANE THAT IS AVAILABLE AND IN CORRECT LOCATION
-            Aircraft_id = list(self.cursor.execute("SELECT Aircraft_id FROM Aircraft WHERE AircraftStatus_id = 1;").fetchone())[0]
+            if len(aircrafts_free) != 0:
+                # FIND FIRST PLANE THAT IS AVAILABLE AND IN CORRECT LOCATION
+                Aircraft_id = aircrafts_free[0][0]
 
-            # ASSIGN AIRCRAFT ID TO FLIGHT CHANGE
-            self.cursor.execute(f"UPDATE FlightTrip SET Aircraft_id = {Aircraft_id} WHERE FlightTrip_id = {FlightTrip_id};")
-            # ASSIGNED TO FLIGHT TO TRUE
-            self.cursor.execute(f"UPDATE Aircraft SET AircraftStatus_id = 3 WHERE Aircraft_id = {Aircraft_id};")
-            # CHANGE AVAILABLE SEATS TO MAX CAPACITY
-            max_capacity = list(self.cursor.execute(f"""
-                            SELECT AircraftType.MaxCapacity
-                            FROM Aircraft LEFT JOIN AircraftType ON Aircraft.AircraftType_id = AircraftType.AircraftType_id
-                            WHERE Aircraft.Aircraft_id = {Aircraft_id};
-                            """).fetchone())[0]
-            self.cursor.execute(f"UPDATE FlightTrip SET AvailableSeats = {max_capacity} WHERE Aircraft_id = {Aircraft_id};")
-            self.db_connection.commit()
-            # RETURN: AIRCRAFT ID
-            return Aircraft_id
+                # ASSIGN AIRCRAFT ID TO FLIGHT CHANGE
+                self.cursor.execute(f"UPDATE FlightTrip SET Aircraft_id = {Aircraft_id} WHERE FlightTrip_id = {FlightTrip_id};")
+                # ASSIGNED TO FLIGHT TO TRUE
+                self.cursor.execute(f"UPDATE Aircraft SET AircraftStatus_id = 3 WHERE Aircraft_id = {Aircraft_id};")
+                # CHANGE AVAILABLE SEATS TO MAX CAPACITY
+                max_capacity = list(self.cursor.execute(f"""
+                                SELECT AircraftType.MaxCapacity
+                                FROM Aircraft LEFT JOIN AircraftType ON Aircraft.AircraftType_id = AircraftType.AircraftType_id
+                                WHERE Aircraft.Aircraft_id = {Aircraft_id};
+                                """).fetchone())[0]
+                self.cursor.execute(f"UPDATE FlightTrip SET AvailableSeats = {max_capacity} WHERE Aircraft_id = {Aircraft_id};")
+                self.db_connection.commit()
+                # RETURN: AIRCRAFT ID
+                return Aircraft_id
+            else:
+                return "No Aircraft's are available at this time"
         except:
             return "something went wrong, perhaps incorrect FlightTrip id"
 
@@ -67,7 +71,7 @@ class FlightTripManager:
             # CHECK THAT IT's A VALID FLIGHT TRIP ID
             try:
                 # COLLECT CURRENT AIRPLANE ID IF ITS BEEN ASSIGNED AN AIRCRAFT
-                Aircraft_id = list(self.cursor.execute(f"SELECT Aircraft_id FROM FlightTrip_id WHERE FlightTrip_id = {FlightTrip_id};").fetchone())[0]
+                Aircraft_id = list(self.cursor.execute(f"SELECT Aircraft_id FROM FlightTrip WHERE FlightTrip_id = {FlightTrip_id};").fetchone())[0]
                 # CALL ASSIGN_AIRCRAFT() AGAIN
                 newAircraft_id = self.assign_aircraft(FlightTrip_id)
 
@@ -85,6 +89,6 @@ class FlightTripManager:
 
 # if __name__ == '__main__':
 #     FTM = FlightTripManager()
-#     print(FTM.create_flight_trip(datetime.now(), 'MAN', 230, 0.05))
-#     print(FTM.assign_aircraft(2))
-#     print(FTM.change_aircraft(1))
+#     print(FTM.create_flight_trip(datetime.now(), 'MAN', 230, 5))
+#     print(FTM.assign_aircraft(5))
+#     print(FTM.change_aircraft(5))
