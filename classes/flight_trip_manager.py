@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from cryptic import Cryptic
 
 class FlightTripManager(DBConnector):
-
+    
     # TABLES: FLIGHT TRIP, AIRPORTS
     def create_flight_trip(self, DepartureTime, ArrivalAirport, TicketPrice, TicketDiscount):
         # INPUT: DEPARTURE TIME (datetime.today()), ARRIVAL AIRPORT (MAN) , TICKET PRICE (230), TICKET DISCOUNT (0.05)
@@ -13,7 +13,7 @@ class FlightTripManager(DBConnector):
         INSERT INTO FlightTrip (DepartureTime, ArrivalTime, DepartureAirport, ArrivalAirport, TicketPrice, TicketDiscount)
         VALUES ('{DepartureTime.strftime('%Y-%m-%d %H:%M:%S')}', '{ArrivalTime.strftime('%Y-%m-%d %H:%M:%S')}', 'LHR', '{ArrivalAirport}', {TicketPrice}, {TicketDiscount});
         """)
-        self.db_connection.commit()
+        # self.db_connection.commit()
         # Attempt to collect the last inserted flight trip identity
         FlightTrip_id = list(self.cursor.execute(f"SELECT FlightTrip_id FROM FlightTrip WHERE FlightTrip_id = @@IDENTITY;").fetchone())[0]
         # RETURN: FLIGHT TRIP ID
@@ -23,34 +23,27 @@ class FlightTripManager(DBConnector):
     # TABLES: FLIGHT TRIP, AIRCRAFT
     def assign_aircraft(self, FlightTrip_id):
         try:
-            # CHECK THAT IT's A VALID FLIGHT TRIP ID
+        # INPUT: FLIGHT TRIP ID
             self.cursor.execute(f"SELECT FlightTrip_id FROM FlightTrip WHERE FlightTrip_id = {FlightTrip_id} ;")
-            # SEE IF THERE ARE AIRCRAFTS FREE
-            aircrafts_free = list(self.cursor.execute(f"select Aircraft_id FROM Aircraft WHERE AircraftStatus_id = 1;").fetchall())
+            # CHECK THAT IT's A VALID FLIGHT TRIP ID
 
-            if len(aircrafts_free) != 0:
-                # FIND FIRST PLANE THAT IS AVAILABLE AND IN CORRECT LOCATION
-                Aircraft_id = aircrafts_free[0][0]
+            # FIND FIRST PLANE THAT IS AVAILABLE AND IN CORRECT LOCATION
+            Aircraft_id = list(self.cursor.execute("SELECT Aircraft_id FROM Aircraft WHERE AircraftStatus_id = 1;").fetchone())[0]
 
-                # ASSIGN AIRCRAFT ID TO FLIGHT CHANGE
-                self.cursor.execute(
-                    f"UPDATE FlightTrip SET Aircraft_id = {Aircraft_id} WHERE FlightTrip_id = {FlightTrip_id};")
-                # ASSIGNED TO FLIGHT TO TRUE
-                self.cursor.execute(f"UPDATE Aircraft SET AircraftStatus_id = 3 WHERE Aircraft_id = {Aircraft_id};")
-                # CHANGE AVAILABLE SEATS TO MAX CAPACITY
-                max_capacity = list(self.cursor.execute(f"""
-                                SELECT AircraftType.MaxCapacity
-                                FROM Aircraft LEFT JOIN AircraftType ON Aircraft.AircraftType_id = AircraftType.AircraftType_id
-                                WHERE Aircraft.Aircraft_id = {Aircraft_id};
-                                """).fetchone())[0]
-                self.cursor.execute(
-                    f"UPDATE FlightTrip SET AvailableSeats = {max_capacity} WHERE Aircraft_id = {Aircraft_id};")
-                self.db_connection.commit()
-                # RETURN: AIRCRAFT ID
-                print(f"The next available aircraft was assigned to flight {FlightTrip_id}")
-                return Aircraft_id
-            else:
-                return "No Aircraft's are available at this time"
+            # ASSIGN AIRCRAFT ID TO FLIGHT CHANGE
+            self.cursor.execute(f"UPDATE FlightTrip SET Aircraft_id = {Aircraft_id} WHERE FlightTrip_id = {FlightTrip_id};")
+            # ASSIGNED TO FLIGHT TO TRUE
+            self.cursor.execute(f"UPDATE Aircraft SET AircraftStatus_id = 3 WHERE Aircraft_id = {Aircraft_id};")
+            # CHANGE AVAILABLE SEATS TO MAX CAPACITY
+            max_capacity = list(self.cursor.execute(f"""
+                            SELECT AircraftType.MaxCapacity
+                            FROM Aircraft LEFT JOIN AircraftType ON Aircraft.AircraftType_id = AircraftType.AircraftType_id
+                            WHERE Aircraft.Aircraft_id = {Aircraft_id};
+                            """).fetchone())[0]
+            self.cursor.execute(f"UPDATE FlightTrip SET AvailableSeats = {max_capacity} WHERE Aircraft_id = {Aircraft_id};")
+            self.db_connection.commit()
+            # RETURN: AIRCRAFT ID
+            return Aircraft_id
         except:
             return "something went wrong, perhaps incorrect FlightTrip id"
 
@@ -63,7 +56,7 @@ class FlightTripManager(DBConnector):
             # CHECK THAT IT's A VALID FLIGHT TRIP ID
             try:
                 # COLLECT CURRENT AIRPLANE ID IF ITS BEEN ASSIGNED AN AIRCRAFT
-                Aircraft_id = list(self.cursor.execute(f"SELECT Aircraft_id FROM FlightTrip WHERE FlightTrip_id = {FlightTrip_id};").fetchone())[0]
+                Aircraft_id = list(self.cursor.execute(f"SELECT Aircraft_id FROM FlightTrip_id WHERE FlightTrip_id = {FlightTrip_id};").fetchone())[0]
                 # CALL ASSIGN_AIRCRAFT() AGAIN
                 newAircraft_id = self.assign_aircraft(FlightTrip_id)
 
@@ -81,13 +74,13 @@ class FlightTripManager(DBConnector):
 
 
     # CHECKED LOCALLY
-    # Checks which flight crew staff is available to be assigned to a flight
+    # Checks which staff is available to be assigned to a flight
     # Returns a list of tuples of (Staff_id, FirstName, LastName)
     def check_staff_availability(self):
         query = f"""
         SELECT Staff_id, FirstName, LastName
         FROM Staff
-        WHERE OnLocation = 1 AND Job_id=2;
+        WHERE OnLocation = 1;
         """
 
         list_of_available_staff = self.cursor.execute(query)
@@ -98,9 +91,9 @@ class FlightTripManager(DBConnector):
         # If you want to see the list, just print it
         return retr_staff
 
+
     
     # TABLES: STAFF
-    # Changed due to new ERD diagram -- wednesday night
     def create_staff(self, job_id, first_name, last_name, user_name, pass_word, passport_number, gender, on_location, staff_level):
         # INPUT: JOB_ID, FIRST NAME, LAST NAME, USERNAME, PASSWORD, PASSPORT NUMBER, GENDER, ON LOCATION
         correct_details = True
@@ -121,10 +114,10 @@ class FlightTripManager(DBConnector):
             # print("Please enter a username")
             correct_details = False
             return "Please enter a username"
-        elif len(user_name) > 32:
-            # print("Make sure the username is less than 33 characters long")
+        elif len(user_name) > 16:
+            # print("Make sure the username is less than 17 characters long")
             correct_details = False
-            return "Make sure the username is less than 33 characters long"
+            return "Make sure the username is less than 17 characters long"
         else:
             pass
 
@@ -200,21 +193,18 @@ class FlightTripManager(DBConnector):
         if correct_details == True:
             self.cursor.execute(f"INSERT INTO Staff (Job_id, FirstName, LastName, Gender, PassportNumber, OnLocation) VALUES ({job_id}, '{first_name}', '{last_name}', '{gender}', '{passport_number}', {on_location})")
             # OUTPUT: SUCCESSFUL MESSAGE
-            # print("Staff has been successfully added")
+            
+            # ENCRPYT THE PASWORD AND PUT INTO TABLE
+            crypto = Cryptic()
+            encrypted_password = crypto.encrypt(pass_word)
+            
+            self.cursor.execute(f"INSERT INTO StaffLogins (StaffUsername, StaffPassword, StaffLevel) VALUES ('{user_name}', '{encrypted_password}', {staff_level})")
             self.db_connection.commit()
+            # print("Staff has been successfully added")
+            return "Staff member has been successfully added"
         else:
             print("Please try again")
             # return "Please try again"
-
-        # ENCRPYT THE PASWORD AND PUT INTO TABLE
-        crypto = Cryptic()
-        encrypted_password = crypto.encrpyt(pass_word)
-
-        query = f"INSERT INTO StaffLogins (StaffUsername, StaffPassword, StaffLevel) VALUES ('{user_name}', '{encrypted_password}', {staff_level})"
-        self.cursor.execute(query)
-        self.db_connection.commit()
-
-        return "\nCompleted!"
 
 
     # CHECKED LOCALLY
