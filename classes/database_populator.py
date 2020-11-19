@@ -5,5 +5,6 @@ class DBPopulator(DBConnector):
         super().__init__()
         database_name = input("\nInput an exisitng database name or create a new database: ")
         try:
-            self.cursor.execute(f"CREATE DATABASE {database_name}")
-    
+            self.cursor.execute(f"CREATE DATABASE {database_name};")
+        except:
+            pass
