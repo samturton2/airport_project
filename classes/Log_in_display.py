@@ -111,11 +111,29 @@ class LogIn(DBConnector):
                 print(" |  Login Page                                  |")
                 print(" |                                              |")
                 print(" |           LOGIN SUCCESSFUL!                  |")
+                print(" |               LOADING.                       |")
+                print(" |                                              |")
+                print(" |______________________________________________|")
+                sleep(0.5)
+                clear()
+                print("  ______________________________________________ ")
+                print(" |  Login Page                                  |")
+                print(" |                                              |")
+                print(" |           LOGIN SUCCESSFUL!                  |")
+                print(" |               LOADING..                      |")
+                print(" |                                              |")
+                print(" |______________________________________________|")
+                sleep(0.5)
+                clear()
+                print("  ______________________________________________ ")
+                print(" |  Login Page                                  |")
+                print(" |                                              |")
+                print(" |           LOGIN SUCCESSFUL!                  |")
                 print(" |               LOADING...                     |")
                 print(" |                                              |")
                 print(" |______________________________________________|")
-                
-                sleep(1.5)
+                sleep(0.5)
+
 
                 if self.staff:
                     if login_details[2] == 1:
