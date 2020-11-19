@@ -92,8 +92,11 @@ class StaffUI_1(BookingManager, FlightTripManager):
         for row in y:
             list_of_flights_check.append(row[0])
 
-        print("\nCurrent Flight ID's:", list_of_flights_check)
         while True:
+            print("\nCurrent Flight ID's:", list_of_flights_check)
+            for flightid in list_of_flights_check:
+                asd = self.cursor.execute(f"SELECT DepartureAirport, ArrivalAirport FROM FlightTrip WHERE FlightTrip_id = {flightid}").fetchone()
+
             flight_to_add = input("\nInput FlightTrip ID or X to go back: ").strip().upper()
 
             if flight_to_add == "X":
@@ -555,7 +558,8 @@ class StaffUI_2(BookingManager, FlightTripManager):
         print("\nCurrent flight crew available:")
         print(tuple_columns)
         for row in list_of_staff:
-            print(row)
+            print(row[0], row[1], row[2])
+        input("\nPress <ENTER> to continue")
 
 
     # OPTION 7
@@ -581,7 +585,7 @@ class StaffUI_2(BookingManager, FlightTripManager):
             
         while True:       
             self.check_flight_staff_available()
-            id_input = input("Please input the staff_id's to add from the list, separated by commas: ")
+            id_input = input("\nPlease input the staff_id's to add from the list, separated by commas:\n")
             list_to_add = id_input.split(",")
             for val in list_to_add:
                 if not val.isdigit():
@@ -621,6 +625,7 @@ class StaffUI_2(BookingManager, FlightTripManager):
                 id_to_sum = int(id_to_sum)
                 break
 
+        print("")
         print(self.calculate_ticket_income(id_to_sum))
         input("\nPress <ENTER> to continue")
 

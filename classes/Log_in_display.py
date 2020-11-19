@@ -20,6 +20,7 @@ class LogIn(DBConnector):
         self.passenger = False
         self.staff = False
         while True:
+            clear()
             print("  ______________________________________________ ")
             print(" | Choose option:                               |")
             print(" |                1. Passenger                  |")
@@ -52,6 +53,7 @@ class LogIn(DBConnector):
     def log_in(self):
         i = 0
         while True:
+            clear()
             i += 1
 
 
@@ -71,6 +73,7 @@ class LogIn(DBConnector):
                 login_details = self.cursor.execute(f"SELECT StaffUsername, StaffPassword, StaffLevel FROM StaffLogins WHERE StaffUsername = '{username}';").fetchone()
                 if login_details == None:
                     print("\nUsername not recognised!\n")
+                    input("\nPress <ENTER> to continue")
                     continue
                 login_details = list(login_details)
 
@@ -79,6 +82,7 @@ class LogIn(DBConnector):
                 print(login_details)
                 if login_details == None:
                     print("\nUsername not recognised!\n")
+                    input("\nPress <ENTER> to continue")
                     continue
                 login_details = list(login_details)
                 login_details.append(0)
@@ -90,6 +94,7 @@ class LogIn(DBConnector):
 
             if password != login_details[1]:
                 print("\nPassword Incorrect\n")
+                input("\nPress <ENTER> to continue")
 
             elif i > 5:
                 # IF LOG IN FAILED 5 TIMES SHUT THEM OUT
