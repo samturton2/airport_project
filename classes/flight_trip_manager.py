@@ -90,7 +90,6 @@ class FlightTripManager(DBConnector):
         # If you want to see the list, just print it
         return retr_staff
 
-
     
     # TABLES: STAFF
     # Changed due to new ERD diagram -- wednesday night
@@ -205,6 +204,7 @@ class FlightTripManager(DBConnector):
         self.db_connection.commit()
 
         return "\nCompleted!"
+
 
     # CHECKED LOCALLY
     # Assign staff to a flight, updates FlightStaff, change corresponding staff OnLocation to 0

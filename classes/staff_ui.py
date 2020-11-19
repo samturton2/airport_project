@@ -8,10 +8,10 @@ from database_connector import DBConnector
 class StaffUI_1(BookingManager, FlightTripManager):
     def __init__(self):
         # connect to  DB
-        self.server = "JaredPC\\JS_1"
-        self.database = "Airport2"
-        self.username = "sa"
-        self.password = "passw0rd"
+        self.server = "ldaijiw-micro.cdix33vx1qyf.eu-west-2.rds.amazonaws.com"
+        self.database = "test_database"
+        self.username = "ldaijiw"
+        self.password = "DreamJLMSU743"
         self.start_connection()
         
         self.user_options()
@@ -177,10 +177,10 @@ class StaffUI_1(BookingManager, FlightTripManager):
 class StaffUI_2(BookingManager, FlightTripManager):
     def __init__(self):
         # connect to  DB
-        self.server = "JaredPC\\JS_1"
-        self.database = "Airport2"
-        self.username = "sa"
-        self.password = "passw0rd"
+        self.server = "ldaijiw-micro.cdix33vx1qyf.eu-west-2.rds.amazonaws.com"
+        self.database = "test_database"
+        self.username = "ldaijiw"
+        self.password = "DreamJLMSU743"
         self.start_connection()
         
         self.user_options()
@@ -502,6 +502,7 @@ class StaffUI_2(BookingManager, FlightTripManager):
         self.change_aircraft(flight_to_add)
         print(f"\nThe next available aircraft was assigned to flight {flight_to_add}")
 
+
     # OPTION 6
     # FINALISED
     def check_flight_staff_available(self):
@@ -511,6 +512,7 @@ class StaffUI_2(BookingManager, FlightTripManager):
         print(tuple_columns)
         for row in list_of_staff:
             print(row)
+
 
     # OPTION 7
     # CHECKED
