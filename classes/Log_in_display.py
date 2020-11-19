@@ -74,21 +74,27 @@ class LogIn(DBConnector):
                 if login_details == None:
                     print("\nUsername not recognised!\n")
                     input("\nPress <ENTER> to continue")
-                    continue
+                    return LogIn()
                 login_details = list(login_details)
 
             elif self.passenger:
                 login_details = self.cursor.execute(f"SELECT PassengerUsername, PassengerPassword FROM PassengerLogins WHERE PassengerUsername = '{username}';").fetchone()
-                print(login_details)
                 if login_details == None:
                     print("\nUsername not recognised!\n")
                     input("\nPress <ENTER> to continue")
-                    continue
+                    return LogIn()
                 login_details = list(login_details)
                 login_details.append(0)
 
             else:
                 login_details = [0]
+
+            try:
+                password = crypto.decrypt(str(login_details.pop(1)))
+                login_details.insert(1, password)
+                
+            except:
+                login_details = [0,0,0]
 
 
 

@@ -48,6 +48,7 @@ class StaffUI_1(BookingManager, FlightTripManager):
         while True:
             clear()
             print("""
+            \nWELCOME TO THE STAFF MENU - ACCESS LEVEL: 2\n
                 Options:
                 0. Make a booking
                 1. Create a new passenger
@@ -227,6 +228,8 @@ class StaffUI_2(BookingManager, FlightTripManager):
         while True:
             clear()
             print("""
+
+            \nWELCOME TO THE STAFF MENU - ACCESS LEVEL: 2\n
                 Options:
                 0. Make a booking
                 1. Create a new staff member
