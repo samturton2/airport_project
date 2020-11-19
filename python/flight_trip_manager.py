@@ -86,5 +86,5 @@ class FlightTripManager:
 # if __name__ == '__main__':
 #     FTM = FlightTripManager()
 #     print(FTM.create_flight_trip(datetime.now(), 'MAN', 230, 0.05))
-#     print(FTM.assign_aircraft(2))
-#     print(FTM.change_aircraft(1))
+#     print(FTM.assign_aircraft(5))
+#     print(FTM.change_aircraft(5))
