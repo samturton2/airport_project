@@ -1,0 +1,29 @@
+{% extends "staff_default.html" %}
+{% block title %}Assign Staff{% endblock %}
+{% block content %}
+<h2>
+    Assign Staff
+</h2>
+<form method="POST">
+  <div class="field">
+  
+    <div class="field">
+      <label class="label">Flight Trip Id</label>
+        <input class="input" type="text" name="flighttripid" placeholder="FlightTrip ID">
+    </div>
+  
+    <div class="field">
+      <label class="label">List of Staff IDs</label>
+        <input type="text" name="staffidlist" id="staffidlist" placeholder="StaffID1, StaffID2, StaffID3...">
+    </div>
+  
+    <div class="field">
+      <p class="control">
+        <button type="submit" class="btn btn-dark">
+          Enter
+        </button>
+      </p>
+    </div>
+  </div>
+</form>
+{% endblock %}

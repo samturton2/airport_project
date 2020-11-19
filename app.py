@@ -149,6 +149,31 @@ def checkstaffavailability():
     return render_template('ftm_checkstaffavailability.html', text = html_insert)
 
 
+@app.route("/ftm/assignstaff/", methods = ["GET", "POST"])
+def assignstaff():
+    if request.method == "POST":
+
+     
+       
+        flighttripid = request.form['flighttripid']
+        staffidlist_str = request.form['staffidlist'].replace(' ', '')
+
+        print(staffidlist_str)
+        
+        staffid_listed = [int(x) for x in staffidlist_str.split(',')]
+        print(staffid_listed)
+
+        ftm = FlightTripManager()
+        return_value = ftm.assign_staff_to_flight(flighttripid, staffid_listed)
+        print(return_value)
+
+        if type(return_value) == list:
+             succes_msg_str = f"Successfully added Staff IDs {return_value} brbrto FlightTrip ID {flighttripid}"
+             return redirect(f'/ftm/success/{succes_msg_str}')
+
+    return render_template('ftm_assignstaff.html')
+
+
 
 @app.route("/ftm/success/<scsmsg>")
 def ftm_success(scsmsg):
