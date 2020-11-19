@@ -6,7 +6,7 @@ class DBConnector:
 
         # connect to  DB
         self.server = "ldaijiw-micro.cdix33vx1qyf.eu-west-2.rds.amazonaws.com"
-        self.database = "test_database"
+        self.database = "db_with_logins"
         self.username = "ldaijiw"
         self.password = "DreamJLMSU743"
 

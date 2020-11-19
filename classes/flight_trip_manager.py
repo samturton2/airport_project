@@ -25,8 +25,7 @@ class FlightTripManager(DBConnector):
             # CHECK THAT IT's A VALID FLIGHT TRIP ID
             self.cursor.execute(f"SELECT FlightTrip_id FROM FlightTrip WHERE FlightTrip_id = {FlightTrip_id} ;")
             # SEE IF THERE ARE AIRCRAFTS FREE
-            aircrafts_free = list(
-                self.cursor.execute(f"select Aircraft_id FROM Aircraft WHERE AircraftStatus_id = 1;").fetchall())
+            aircrafts_free = list(self.cursor.execute(f"select Aircraft_id FROM Aircraft WHERE AircraftStatus_id = 1;").fetchall())
 
             if len(aircrafts_free) != 0:
                 # FIND FIRST PLANE THAT IS AVAILABLE AND IN CORRECT LOCATION
@@ -47,6 +46,7 @@ class FlightTripManager(DBConnector):
                     f"UPDATE FlightTrip SET AvailableSeats = {max_capacity} WHERE Aircraft_id = {Aircraft_id};")
                 self.db_connection.commit()
                 # RETURN: AIRCRAFT ID
+                print(f"The next available aircraft was assigned to flight {FlightTrip_id}")
                 return Aircraft_id
             else:
                 return "No Aircraft's are available at this time"

@@ -9,7 +9,7 @@ class StaffUI_1(BookingManager, FlightTripManager):
     def __init__(self):
         # connect to  DB
         self.server = "ldaijiw-micro.cdix33vx1qyf.eu-west-2.rds.amazonaws.com"
-        self.database = "test_database"
+        self.database = "db_with_logins"
         self.username = "ldaijiw"
         self.password = "DreamJLMSU743"
         self.start_connection()
@@ -178,7 +178,7 @@ class StaffUI_2(BookingManager, FlightTripManager):
     def __init__(self):
         # connect to  DB
         self.server = "ldaijiw-micro.cdix33vx1qyf.eu-west-2.rds.amazonaws.com"
-        self.database = "test_database"
+        self.database = "db_with_logins"
         self.username = "ldaijiw"
         self.password = "DreamJLMSU743"
         self.start_connection()
@@ -444,6 +444,7 @@ class StaffUI_2(BookingManager, FlightTripManager):
 
         self.create_flight_trip(dt_input, arrivalairport, ticketprice, ticketdiscount)
         print("\nAdded!")
+        self.assign_aircraft_to_existing_flight_trip()
         
         
     # OPTION 4
@@ -499,8 +500,7 @@ class StaffUI_2(BookingManager, FlightTripManager):
             else:
                 break
         
-        self.change_aircraft(flight_to_add)
-        print(f"\nThe next available aircraft was assigned to flight {flight_to_add}")
+        print(self.change_aircraft(flight_to_add))
 
 
     # OPTION 6
