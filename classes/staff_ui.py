@@ -1,8 +1,17 @@
 import pyodbc
-from datetime import datetime
+from time import sleep
+from os import system, name
+from datetime import datetime, timedelta
 from booking_manager import BookingManager
 from flight_trip_manager import FlightTripManager
 from database_connector import DBConnector
+
+def clear():
+    if name == "nt":
+        _ = system('cls')
+    else:
+        _ = system("clear")
+
 
 # LEVEL 1 STAFF
 class StaffUI_1(BookingManager, FlightTripManager):
@@ -37,34 +46,43 @@ class StaffUI_1(BookingManager, FlightTripManager):
     
     def user_options(self):
         while True:
+            clear()
             print("""
                 Options:
                 0. Make a booking
                 1. Create a new passenger
                 2. Print a list of names of who's on a flight
-                TYPE <X> TO EXIT""")
+                3. Logout
+                TYPE <X> TO SHUTDOWN""")
             choice = input("---> ").upper().strip()
 
 
-            if choice not in ["0", "1", "2", "X"]:
+            if choice not in ["0", "1", "2", "3", "X"]:
                 continue
 
             
             # CHECKED
             if choice == "X":
-                break
+                clear()
+                exit()
 
 
             if choice == "0":
                 self.staffui_make_booking()
+                sleep(2)
 
 
             if choice == "1":
                 self.create_new_passenger()
-
+                sleep(2)
 
             if choice == "2":
                 self.print_list_flight_names()
+                sleep(2)
+
+            if choice == "3":
+                clear()
+                return "RETURNED LOGOUT"
 
 
     # OPTION 0
@@ -79,7 +97,7 @@ class StaffUI_1(BookingManager, FlightTripManager):
             flight_to_add = input("\nInput FlightTrip ID or X to go back: ").strip().upper()
 
             if flight_to_add == "X":
-                return print("\nAdding aircraft aborted")
+                return print("\nAdding passengers aborted")
 
             if not flight_to_add.isdigit():
                 print("\nWrong input format, try again")
@@ -204,6 +222,7 @@ class StaffUI_2(BookingManager, FlightTripManager):
     # This shows the available options for the user
     def user_options(self):
         while True:
+            clear()
             print("""
                 Options:
                 0. Make a booking
@@ -216,56 +235,73 @@ class StaffUI_2(BookingManager, FlightTripManager):
                 7. Assign staff to a flight
                 8. Calculate the income from a flight
                 9. Print a list of names of who's on a flight
-                TYPE <X> TO EXIT""")
+                10. LOGOUT
+                TYPE <X> TO SHUTDOWN""")
             choice = input("---> ").upper().strip()
 
 
-            if choice not in ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "X"]:
+            if choice not in ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "X"]:
                 continue
 
             
             # CHECKED
             if choice == "X":
-                break
+                clear()
+                exit()
+
 
             if choice == "0":
                 self.staffui_make_booking()
+                sleep(2)
+
 
             if choice == "1":
                 self.create_new_staff_member()
+                sleep(2)
 
 
             if choice == "2":
                 self.create_new_passenger()
+                sleep(2)
 
 
             if choice == "3":
                 self.create_new_flight_trip()
+                sleep(2)
 
 
             if choice == "4":
                 self.assign_aircraft_to_existing_flight_trip()
+                sleep(2)
 
 
             if choice == "5":
                 self.change_aircraft_in_trip()
+                sleep(2)
 
 
             if choice == "6":
                 self.check_flight_staff_available()
+                sleep(2)
 
 
             if choice == "7":
                 self.assign_staff_to_existing_flight()
+                sleep(2)
 
 
             if choice == "8":
                 self.calculate_income_from_flight()
+                sleep(2)
 
 
             if choice == "9":
                 self.print_list_flight_names()
+                sleep(2)
 
+            if choice == "10":
+                clear()
+                return "RETURNED LOGOUT"
 
     # OPTION 0
     def staffui_make_booking(self):
@@ -366,7 +402,15 @@ class StaffUI_2(BookingManager, FlightTripManager):
         # INPUT: FIRST NAME, LAST NAME, DOB, GENDER, PASSPORT NUMBER
         firstname = input("\nInput first name: ").title().strip()
         lastname = input("Input last name: ").title().strip()
-        dob = input("Enter date of birth (YYYY-MM-DD): ")
+
+        while  True:
+            dob = input("Enter date of birth (YYYY-MM-DD): ").strip()
+            check_list = dob.split("-")
+            for val in check_list:
+                if not val.isdigit():
+                    continue
+            break
+
         gender = input("Input gender: ").title().strip()
         while True:
             passportnumber = input("Input a 9-digit Passport number: ").strip()
@@ -578,6 +622,7 @@ class StaffUI_2(BookingManager, FlightTripManager):
                 break
 
         print(self.calculate_ticket_income(id_to_sum))
+        input("\nPress <ENTER> to continue")
 
         
     # OPTION 9

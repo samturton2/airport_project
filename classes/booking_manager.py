@@ -117,7 +117,7 @@ class BookingManager(DBConnector):
     # The return object is a tuple consisting of Passenger Names and Staff Names in lists
     def flight_attendees_list(self, flight_trip_id):
         passenger_query = f"""
-        SELECT Passengers.Passenger_id, Passengers.FirstName, Passengers.LastName
+        SELECT Passengers.Passenger_id, Passengers.FirstName, Passengers.LastName, Passengers.PassportNumber
         FROM FlightTrip
         INNER JOIN TicketDetails ON TicketDetails.FlightTrip_id = FlightTrip.FlightTrip_id
         INNER JOIN Passengers ON Passengers.Passenger_id = TicketDetails.Passenger_id
@@ -128,7 +128,7 @@ class BookingManager(DBConnector):
             retr_passengers.append(row)
 
         staff_query = f"""
-        SELECT Staff.Staff_id, Staff.FirstName, Staff.LastName
+        SELECT Staff.Staff_id, Staff.FirstName, Staff.LastName, Staff.PassportNumber
         FROM FlightTrip
         INNER JOIN FlightStaff ON FlightStaff.FlightTrip_id = FlightTrip.FlightTrip_id
         INNER JOIN Staff ON Staff.Staff_id = FlightStaff.Staff_id
