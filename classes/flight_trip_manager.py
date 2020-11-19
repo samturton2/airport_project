@@ -2,7 +2,7 @@ from database_connector import DBConnector
 from datetime import datetime, timedelta
 
 class FlightTripManager(DBConnector):
-    
+
     # TABLES: FLIGHT TRIP, AIRPORTS
     def create_flight_trip(self, DepartureTime, ArrivalAirport, TicketPrice, TicketDiscount):
         # INPUT: DEPARTURE TIME (datetime.today()), ARRIVAL AIRPORT (MAN) , TICKET PRICE (230), TICKET DISCOUNT (0.05)
@@ -12,7 +12,7 @@ class FlightTripManager(DBConnector):
         INSERT INTO FlightTrip (DepartureTime, ArrivalTime, DepartureAirport, ArrivalAirport, TicketPrice, TicketDiscount)
         VALUES ('{DepartureTime.strftime('%Y-%m-%d %H:%M:%S')}', '{ArrivalTime.strftime('%Y-%m-%d %H:%M:%S')}', 'LHR', '{ArrivalAirport}', {TicketPrice}, {TicketDiscount});
         """)
-        # self.db_connection.commit()
+        self.db_connection.commit()
         # Attempt to collect the last inserted flight trip identity
         FlightTrip_id = list(self.cursor.execute(f"SELECT FlightTrip_id FROM FlightTrip WHERE FlightTrip_id = @@IDENTITY;").fetchone())[0]
         # RETURN: FLIGHT TRIP ID
@@ -80,13 +80,13 @@ class FlightTripManager(DBConnector):
 
 
     # CHECKED LOCALLY
-    # Checks which staff is available to be assigned to a flight
+    # Checks which flight crew staff is available to be assigned to a flight
     # Returns a list of tuples of (Staff_id, FirstName, LastName)
     def check_staff_availability(self):
         query = f"""
         SELECT Staff_id, FirstName, LastName
         FROM Staff
-        WHERE OnLocation = 1;
+        WHERE OnLocation = 1 AND Job_id=2;
         """
 
         list_of_available_staff = self.cursor.execute(query)
@@ -97,10 +97,10 @@ class FlightTripManager(DBConnector):
         # If you want to see the list, just print it
         return retr_staff
 
-
     
     # TABLES: STAFF
-    def create_staff(self, job_id, first_name, last_name, user_name, pass_word, passport_number, gender, on_location):
+    # Changed due to new ERD diagram -- wednesday night
+    def create_staff(self, job_id, first_name, last_name, user_name, pass_word, passport_number, gender, on_location, staff_level):
         # INPUT: JOB_ID, FIRST NAME, LAST NAME, USERNAME, PASSWORD, PASSPORT NUMBER, GENDER, ON LOCATION
         correct_details = True
 
@@ -120,10 +120,10 @@ class FlightTripManager(DBConnector):
             # print("Please enter a username")
             correct_details = False
             return "Please enter a username"
-        elif len(user_name) > 16:
-            # print("Make sure the username is less than 17 characters long")
+        elif len(user_name) > 32:
+            # print("Make sure the username is less than 33 characters long")
             correct_details = False
-            return "Make sure the username is less than 17 characters long"
+            return "Make sure the username is less than 33 characters long"
         else:
             pass
 
@@ -197,14 +197,20 @@ class FlightTripManager(DBConnector):
 
 
         if correct_details == True:
-            self.cursor.execute(f"INSERT INTO Staff (Job_id, Username, FirstName, LastName, Gender, UserPassword, PassportNumber, OnLocation) VALUES ({job_id}, '{user_name}', '{first_name}', '{last_name}', '{gender}', '{pass_word}', '{passport_number}', {on_location})")
+            self.cursor.execute(f"INSERT INTO Staff (Job_id, FirstName, LastName, Gender, PassportNumber, OnLocation) VALUES ({job_id}, '{first_name}', '{last_name}', '{gender}', '{passport_number}', {on_location})")
             # OUTPUT: SUCCESSFUL MESSAGE
             # print("Staff has been successfully added")
             self.db_connection.commit()
-            return "Staff member has been successfully added"
         else:
             print("Please try again")
             # return "Please try again"
+
+
+        query = f"INSERT INTO StaffLogins (StaffUsername, StaffPassword, StaffLevel) VALUES ('{user_name}', '{pass_word}', {staff_level})"
+        self.cursor.execute(query)
+        self.db_connection.commit()
+
+        return "\nCompleted!"
 
 
     # CHECKED LOCALLY
@@ -219,7 +225,7 @@ class FlightTripManager(DBConnector):
             WHERE Staff_id = {staff_id}
             """
             self.cursor.execute(query_for_onlocation)
-            self.connection.commit()
+            self.db_connection.commit()
 
         # Adds the flight staff with flight id to the FlightStaff table
         for staff_id in list_of_staff_ids:
@@ -228,7 +234,7 @@ class FlightTripManager(DBConnector):
             VALUES ({flight_trip_id}, {staff_id})
             """
             self.cursor.execute(query_for_insertion)
-            self.connection.commit()
+            self.db_connection.commit()
 
         # Return the list of names of staff added
         return list_of_staff_ids

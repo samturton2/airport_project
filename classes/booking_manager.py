@@ -1,4 +1,5 @@
 import pyodbc
+import datetime
 from datetime import date
 from database_connector import DBConnector
 
@@ -153,9 +154,9 @@ class BookingManager(DBConnector):
             print(person)
 
 
-    
     # TABLES: PASSENGER
-    def create_passenger(self, first_name, last_name, dob, gender, passport_number):
+    # Changed due to new ERD diagram -- Wednesday night
+    def create_passenger(self, first_name, last_name, dob, gender, passport_number, user_name, pass_word):
         # INPUT: FIRST NAME, LAST NAME, DOB, GENDER, PASSPORT NUMBER
         correct_details = True
 
@@ -221,7 +222,14 @@ class BookingManager(DBConnector):
             # OUTPUT: SUCCESSFUL MESSAGE
             # print("Passenger has been successfully added")
             self.db_connection.commit()
-            return "Passenger has been successfully added"
         else:
             print("Please try again")
             # return "Please try again"
+        
+        # THIS WAS ADDED ON WEDNESDAY, IT INPUTS USERNAME AND PASSWORD INTO PassengerLogins
+
+        query = f"INSERT INTO PassengerLogins (PassengerUsername, PassengerPassword) VALUES ('{user_name}', '{pass_word}')"
+        self.cursor.execute(query)
+        self.db_connection.commit()
+
+        return "\nCompleted!"
