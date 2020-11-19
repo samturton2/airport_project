@@ -1,0 +1,41 @@
+{% extends "staff_default.html" %}
+{% block title %}Create Flight Trip{% endblock %}
+{% block content %}
+<h2>
+    Create Flight Trip
+</h2>
+<form method="POST">
+  <div class="field">
+
+    <div class="field">
+      <form action="/action_page.php">
+        <label for="departuretime">Departure date and time: </label>
+        <input type="datetime-local" id="departuretime" name="departuretime">
+      </form>
+    </div>
+  
+    <div class="field">
+      <label class="label">Arrival Airport: </label>
+        <input class="input" type="text" name="arrivalairport" placeholder="LGW">
+    </div>
+  
+    <div class="field">
+      <label class="label">Ticket Price: </label>
+        <input type="text" name="ticketprice" id="ticketprice" data-type="currency" placeholder="£100.00">
+    </div>
+  
+    <div class="field">
+      <label class="label">Ticket Discount: </label>
+        <input type="text" name="ticketdiscount" id="ticketdiscount" data-type="number" placeholder="10%">
+    </div>
+  
+    <div class="field">
+      <p class="control">
+        <button type="submit" class="btn btn-dark">
+          Enter
+        </button>
+      </p>
+    </div>
+  </div>
+</form>
+{% endblock %}

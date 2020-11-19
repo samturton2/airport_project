@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, redirect, url_for, render_template, request, session
 from classes.Log_in_display import LogIn
 from classes.flight_trip_manager import FlightTripManager
+import datetime
 app = Flask(__name__)
 
 @app.route("/")
@@ -59,6 +60,27 @@ FLIGHT TRIP MANAGER
 def flighttripmanager():
     return render_template('ftm_home.html')
 
+@app.route("/ftm/createflighttrip/", methods = ["GET", "POST"])
+def createflighttrip():
+    if request.method == "POST":
+
+        departuretime_str = request.form['departuretime']
+        departuretime_dt = datetime.datetime.strptime(departuretime_str, '%Y-%m-%dT%H:%M')
+       
+        arrivalairport = request.form['arrivalairport']
+        ticketprice = request.form['ticketprice']
+        ticketdiscount = request.form['ticketdiscount']
+
+        ftm = FlightTripManager()
+        return_value = ftm.create_flight_trip(departuretime_dt, arrivalairport, ticketprice, ticketdiscount)
+        print(return_value)
+
+        if type(return_value) == int:
+            succes_msg_str = f"Your flight to airport {arrivalairport} has FlightTrip ID {return_value}brbrRemember to assign an aircraft"
+            return redirect(f'/ftm/success/{succes_msg_str}')
+
+    return render_template('ftm_createflighttrip.html')
+
 
 @app.route("/ftm/assignaircraft/", methods = ["GET", "POST"])
 def assignaircraft():
@@ -69,7 +91,8 @@ def assignaircraft():
         return_value = ftm.assign_aircraft(r_flight_trip_id)
 
         if type(return_value) == int:
-            return render_template("ftm_success.html")
+            succes_msg_str = f"Aircraft {return_value} assigned to FlightTrip {r_flight_trip_id}"
+            return redirect(f'/ftm/success/{succes_msg_str}')
    
     return render_template("ftm_assignaircraft.html")
 
@@ -83,14 +106,54 @@ def changeaircraft():
         return_value = ftm.change_aircraft(r_flight_trip_id)
         print(return_value)
         if type(return_value) == int:
-            return render_template("ftm_success.html")
+            succes_msg_str = f"Aircraft {return_value} assigned to FlightTrip {r_flight_trip_id}"
+            return redirect(f'/ftm/success/{succes_msg_str}')
 
     return render_template("ftm_changeaircraft.html")
 
 
-@app.route("/ftm/success")
-def ftm_success():
-    return render_template("ftm_success.html")
+@app.route("/ftm/flighttripincome/", methods = ["GET", "POST"])
+def flighttripincome():
+    if request.method == "POST":
+        r_flight_trip_id = request.form['flight_trip_id']
+
+        ftm = FlightTripManager()
+        return_string = ftm.calculate_ticket_income(r_flight_trip_id)
+        return redirect(f'/ftm/success/{return_string}')
+
+    return render_template('ftm_flighttripincome.html')
+
+
+@app.route("/ftm/checkstaffavailability/")
+def checkstaffavailability():
+    ftm = FlightTripManager()
+    staff_list = ftm.check_staff_availability()
+    
+    html_insert = '''
+    <table style = "width:50%">
+        <tr>
+            <th>Staff ID</th>
+            <th>First Name</th>
+            <th>Age</th>
+        </tr>
+    '''
+
+    for staff_member in staff_list:
+        html_insert = html_insert + '<tr>'
+        for attribute in staff_member:
+            html_insert = html_insert + f"<td>{attribute}</td>"
+        html_insert = html_insert + "</tr>"
+
+
+
+    return render_template('ftm_checkstaffavailability.html', text = html_insert)
+
+
+
+@app.route("/ftm/success/<scsmsg>")
+def ftm_success(scsmsg):
+    success_msg = "<h3>"+scsmsg.replace('brbr', '<br>')+"</h3>"
+    return render_template("ftm_success.html", text=success_msg)
 
 
 '''

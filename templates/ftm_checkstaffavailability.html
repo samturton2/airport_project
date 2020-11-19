@@ -1,0 +1,15 @@
+{% extends "staff_default.html" %}
+{% block title %}Check Staff Availability{% endblock %}
+{% block content %}
+<h2>
+  Staff Availability
+</h2>
+
+<a class="nav-link" href="/ftm/">
+  <button type="button" class="btn btn-primary">Return To FTM</button>
+</a>
+
+<div class="output">
+  {{text|safe}}
+</div>
+{% endblock %}
