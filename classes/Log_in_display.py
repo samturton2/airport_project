@@ -4,7 +4,7 @@ from passenger_ui import Passenger # import passengers class
 from staff_ui import StaffUI_1, StaffUI_2
 import pandas
 from tabulate import tabulate
-
+from cryptic import Cryptic
 
 class LogIn(DBConnector):
     def __init__(self):
@@ -36,6 +36,7 @@ class LogIn(DBConnector):
 
     def log_in(self):
         i = 0
+        crypto = Cryptic() # Create object of class
         while True:
             i += 1
             print("  ______________________________________________ ")
@@ -52,8 +53,13 @@ class LogIn(DBConnector):
             elif self.passenger:
                 login_details = list(self.cursor.execute(f"SELECT PassengerUsername, PassengerPassword FROM PassengerLogins WHERE PassengerUsername = '{username}';").fetchone())
                 login_details.append(0)
-            else:
-                login_details = [0]
+
+            # DECRYPT THE PASSWORD AND LOAD IT BACK INTO THE LIST
+            try:
+                    password = crypto.decrypt(str(login_details.pop(1)))
+                    login_details.insert(1, password)
+            except:
+                login_details = [0,0,0]
 
             if len(login_details) == 0:
                 print("\nUsername not recognised!\n")

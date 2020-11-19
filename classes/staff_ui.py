@@ -3,13 +3,14 @@ from datetime import datetime
 from booking_manager import BookingManager
 from flight_trip_manager import FlightTripManager
 from database_connector import DBConnector
+from cryptic import Cryptic
 
 # LEVEL 1 STAFF
 class StaffUI_1(BookingManager, FlightTripManager):
     def __init__(self):
         # connect to  DB
         self.server = "ldaijiw-micro.cdix33vx1qyf.eu-west-2.rds.amazonaws.com"
-        self.database = "db_with_logins"
+        self.database = "test_sam"
         self.username = "ldaijiw"
         self.password = "DreamJLMSU743"
         self.start_connection()

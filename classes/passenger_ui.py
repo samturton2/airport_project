@@ -8,7 +8,7 @@ class Passenger:
 
         # Connecting to  DB
         self.server = "ldaijiw-micro.cdix33vx1qyf.eu-west-2.rds.amazonaws.com"
-        self.database = "test_database"
+        self.database = "test_sam"
         self.username = "ldaijiw"
         self.password = "DreamJLMSU743"
 

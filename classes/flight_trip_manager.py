@@ -1,5 +1,6 @@
 from database_connector import DBConnector
 from datetime import datetime, timedelta
+from cryptic import Cryptic
 
 class FlightTripManager(DBConnector):
 
@@ -205,8 +206,11 @@ class FlightTripManager(DBConnector):
             print("Please try again")
             # return "Please try again"
 
+        # ENCRPYT THE PASWORD AND PUT INTO TABLE
+        crypto = Cryptic()
+        encrypted_password = crypto.encrpyt(pass_word)
 
-        query = f"INSERT INTO StaffLogins (StaffUsername, StaffPassword, StaffLevel) VALUES ('{user_name}', '{pass_word}', {staff_level})"
+        query = f"INSERT INTO StaffLogins (StaffUsername, StaffPassword, StaffLevel) VALUES ('{user_name}', '{encrypted_password}', {staff_level})"
         self.cursor.execute(query)
         self.db_connection.commit()
 
