@@ -2,6 +2,7 @@ import pyodbc
 import datetime
 from datetime import date
 from database_connector import DBConnector
+from cryptic import Cryptic
 
 class BookingManager(DBConnector):
     
@@ -226,9 +227,11 @@ class BookingManager(DBConnector):
             print("Please try again")
             # return "Please try again"
         
-        # THIS WAS ADDED ON WEDNESDAY, IT INPUTS USERNAME AND PASSWORD INTO PassengerLogins
+        # INPUT USERNAME AND ENCRYPTED PASSWORD INTO PassengerLogins
+        crypto = Cryptic()
+        encrypted_password = crypto.encrpyt(pass_word)
 
-        query = f"INSERT INTO PassengerLogins (PassengerUsername, PassengerPassword) VALUES ('{user_name}', '{pass_word}')"
+        query = f"INSERT INTO PassengerLogins (PassengerUsername, PassengerPassword) VALUES ('{user_name}', '{encrypted_password}')"
         self.cursor.execute(query)
         self.db_connection.commit()
 

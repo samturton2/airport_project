@@ -1,5 +1,6 @@
 from database_connector import DBConnector
 from datetime import datetime, timedelta
+from cryptic import Cryptic
 
 class FlightTripManager(DBConnector):
     
@@ -192,15 +193,18 @@ class FlightTripManager(DBConnector):
         if correct_details == True:
             self.cursor.execute(f"INSERT INTO Staff (Job_id, FirstName, LastName, Gender, PassportNumber, OnLocation) VALUES ({job_id}, '{first_name}', '{last_name}', '{gender}', '{passport_number}', {on_location})")
             # OUTPUT: SUCCESSFUL MESSAGE
-            # print("Staff has been successfully added")
-            self.cursor.execute(f"INSERT INTO StaffLogins (StaffUsername, StaffPassword, StaffLevel) VALUES ('{user_name}', '{pass_word}', {staff_level})")
+            
+            # ENCRPYT THE PASWORD AND PUT INTO TABLE
+            crypto = Cryptic()
+            encrypted_password = crypto.encrypt(pass_word)
+            
+            self.cursor.execute(f"INSERT INTO StaffLogins (StaffUsername, StaffPassword, StaffLevel) VALUES ('{user_name}', '{encrypted_password}', {staff_level})")
             self.db_connection.commit()
+            # print("Staff has been successfully added")
             return "Staff member has been successfully added"
         else:
             print("Please try again")
             # return "Please try again"
-
-        
 
 
     # CHECKED LOCALLY

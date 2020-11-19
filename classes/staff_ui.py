@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 from booking_manager import BookingManager
 from flight_trip_manager import FlightTripManager
 from database_connector import DBConnector
+from cryptic import Cryptic
 
 def clear():
     if name == "nt":
@@ -48,6 +49,7 @@ class StaffUI_1(BookingManager, FlightTripManager):
         while True:
             clear()
             print("""
+            \nWELCOME TO THE STAFF MENU - ACCESS LEVEL: 2\n
                 Options:
                 0. Make a booking
                 1. Create a new passenger
@@ -227,6 +229,8 @@ class StaffUI_2(BookingManager, FlightTripManager):
         while True:
             clear()
             print("""
+
+            \nWELCOME TO THE STAFF MENU - ACCESS LEVEL: 2\n
                 Options:
                 0. Make a booking
                 1. Create a new staff member

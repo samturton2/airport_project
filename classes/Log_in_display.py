@@ -6,7 +6,7 @@ from passenger_ui import Passenger # import passengers class
 from staff_ui import StaffUI_1, StaffUI_2
 import pandas
 from tabulate import tabulate
-
+from cryptic import Cryptic
 
 def clear():
     if name == "nt":
@@ -52,6 +52,7 @@ class LogIn(DBConnector):
 
     def log_in(self):
         i = 0
+        crypto = Cryptic() # Create object of class
         while True:
             clear()
             i += 1
@@ -74,22 +75,24 @@ class LogIn(DBConnector):
                 if login_details == None:
                     print("\nUsername not recognised!\n")
                     input("\nPress <ENTER> to continue")
-                    continue
+                    return LogIn()
                 login_details = list(login_details)
 
             elif self.passenger:
                 login_details = self.cursor.execute(f"SELECT PassengerUsername, PassengerPassword FROM PassengerLogins WHERE PassengerUsername = '{username}';").fetchone()
-                print(login_details)
                 if login_details == None:
                     print("\nUsername not recognised!\n")
                     input("\nPress <ENTER> to continue")
-                    continue
+                    return LogIn()
                 login_details = list(login_details)
                 login_details.append(0)
 
-            else:
-                login_details = [0]
-
+            try:
+                password = crypto.decrypt(str(login_details.pop(1)))
+                login_details.insert(1, password)
+                
+            except:
+                login_details = [0,0,0]
 
 
             if password != login_details[1]:
@@ -108,11 +111,29 @@ class LogIn(DBConnector):
                 print(" |  Login Page                                  |")
                 print(" |                                              |")
                 print(" |           LOGIN SUCCESSFUL!                  |")
+                print(" |               LOADING.                       |")
+                print(" |                                              |")
+                print(" |______________________________________________|")
+                sleep(0.5)
+                clear()
+                print("  ______________________________________________ ")
+                print(" |  Login Page                                  |")
+                print(" |                                              |")
+                print(" |           LOGIN SUCCESSFUL!                  |")
+                print(" |               LOADING..                      |")
+                print(" |                                              |")
+                print(" |______________________________________________|")
+                sleep(0.5)
+                clear()
+                print("  ______________________________________________ ")
+                print(" |  Login Page                                  |")
+                print(" |                                              |")
+                print(" |           LOGIN SUCCESSFUL!                  |")
                 print(" |               LOADING...                     |")
                 print(" |                                              |")
                 print(" |______________________________________________|")
-                
-                sleep(1.5)
+                sleep(0.5)
+
 
                 if self.staff:
                     if login_details[2] == 1:
