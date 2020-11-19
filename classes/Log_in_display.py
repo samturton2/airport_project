@@ -48,21 +48,22 @@ class LogIn(DBConnector):
             # LOAD IN THE RELAVENT PASSENGERS AND STAFF LOG IN DETAILS
             if self.staff:
                 # IF STAFF ALSO LOAD IN THERE RANK
-                login_details = self.cursor.execute(f"SELECT StaffUsername, StaffPassword, StaffLevel FROM StaffLogins WHERE StaffUsername = '{username}';").fetchone()
+                login_details = list(self.cursor.execute(f"SELECT StaffUsername, StaffPassword, StaffLevel FROM StaffLogins WHERE StaffUsername = '{username}';").fetchone())
             elif self.passenger:
-                login_details = self.cursor.execute(f"SELECT PassengerUsername, PassengerPassword FROM PassengerLogins WHERE PassengerUsername = '{username}';").fetchone()
+                login_details = list(self.cursor.execute(f"SELECT PassengerUsername, PassengerPassword FROM PassengerLogins WHERE PassengerUsername = '{username}';").fetchone())
+                login_details.append(0)
             else:
                 login_details = [0]
 
             if len(login_details) == 0:
                 print("\nUsername not recognised!\n")
-            elif password != list(login_details)[1]:
+            elif password != login_details[1]:
                 print("\nPassword Incorrect\n")
             elif i > 5:
                 # IF LOG IN FAILED 5 TIMES SHUT THEM OUT
                 print(" You have been shut out of the system! ")
                 break
-            elif [username, password] == list(login_details):
+            elif [username, password] == login_details[:2]:
                 print("  ______________________________________________ ")
                 print(" |  Login Page                                  |")
                 print(" |                                              |")
@@ -70,15 +71,18 @@ class LogIn(DBConnector):
                 print(" |                                              |")
                 print(" |______________________________________________|")
                 if self.staff:
-                    if list(login_details)[3] == 1:
+                    if login_details[2] == 1:
                         # RUN STAFF 1 CAPABILITIES
                         StaffUI_1()
-                    elif list(login_details)[3] == 2:
+                        return login_details[0], login_details[1], login_details[2]
+                    elif list(login_details)[2] == 2:
                         # RUN STAFF 2 CAPABILITIES
                         StaffUI_2()
+                        return login_details[0], login_details[1], login_details[2]
                 elif self.passenger:
                     # RUN PASSENGER CAPABILITIES
                     Passenger()
+                    return login_details[0], login_details[1], login_details[2]
 
 
 if __name__ == '__main__':
