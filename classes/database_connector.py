@@ -5,10 +5,10 @@ class DBConnector:
     def __init__(self):
 
         # connect to  DB
-        self.server = "ldaijiw-micro.cdix33vx1qyf.eu-west-2.rds.amazonaws.com"
-        self.database = "test_database"
-        self.username = "ldaijiw"
-        self.password = "DreamJLMSU743"
+        self.server = "JaredPC\\JS_1"
+        self.database = "Airport2"
+        self.username = "sa"
+        self.password = "passw0rd"
 
         self.start_connection()
 

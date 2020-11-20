@@ -17,18 +17,22 @@ DROP TABLE Airports;
 DROP TABLE Staff;
 DROP TABLE Jobs;
 DROP TABLE Passengers;
+DROP TABLE StaffLogins;
+DROP TABLE PassengerLogins;
 
 
-SELECT * FROM Passengers;
+SELECT * FROM FlightStaff;
 SELECT * FROM TicketDetails;
 SELECT * FROM FlightTrip;
-SELECT * FROM FlightStaff;
-SELECT * FROM Staff;
 SELECT * FROM Aircraft;
+SELECT * FROM AircraftStatus;
 SELECT * FROM AircraftType;
 SELECT * FROM Airports;
-SELECT * FROM AircraftStatus;
+SELECT * FROM Staff;
+SELECT * FROM StaffLogins;
 SELECT * FROM Jobs;
+SELECT * FROM Passengers;
+SELECT * FROM PassengerLogins;
 
 
 CREATE TABLE [Passengers] (
@@ -41,6 +45,13 @@ CREATE TABLE [Passengers] (
     PRIMARY KEY ([Passenger_id]) 
 );
 
+CREATE TABLE [PassengerLogins] (
+    [Passenger_id] INT IDENTITY(1,1) NOT NULL,
+    PassengerUsername VARCHAR(32),
+    PassengerPassword VARCHAR(MAX),
+    PRIMARY KEY ([Passenger_id])
+
+);
 
 CREATE TABLE [Jobs] (
     [Job_id] INT IDENTITY(1,1) NOT NULL,
@@ -55,14 +66,20 @@ CREATE TABLE [Staff] (
     [FirstName] VARCHAR(32) NOT NULL,
     [LastName] VARCHAR(32) NOT NULL,
     [Gender] VARCHAR(32) NOT NULL,
-    [Username] VARCHAR(32) NOT NULL,
-    [UserPassword] VARCHAR(32) NOT NULL,
     [PassportNumber] VARCHAR(9) NOT NULL,
     [OnLocation] INT NOT NULL,
     PRIMARY KEY ([Staff_id]),
     FOREIGN KEY ([Job_id]) REFERENCES Jobs([Job_id])
 );
 
+CREATE TABLE [StaffLogins] (
+    [Staff_id] INT IDENTITY(1,1) NOT NULL,
+    [StaffUsername] VARCHAR(32),
+    [StaffPassword] VARCHAR(MAX),
+    [StaffLevel] INT,
+    PRIMARY KEY ([Staff_id])
+
+);
 
 CREATE TABLE [Airports] (
     [Airport_id] VARCHAR(3) NOT NULL,

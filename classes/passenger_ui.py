@@ -1,102 +1,116 @@
 import pyodbc
+from os import system, name
 import pandas as pd
 from tabulate import tabulate
+from database_connector import DBConnector
+import time
 
-class Passenger:
+def clear():
+    if name == "nt":
+        _ = system('cls')
+    else:
+        _ = system("clear")
+
+class Passenger(DBConnector):
     def __init__(self):
-        import pyodbc
-        import pandas as pd
-        from tabulate import tabulate
-        
-        # Connecting to  DB
-        self.server = "ldaijiw-micro.cdix33vx1qyf.eu-west-2.rds.amazonaws.com"
-        self.database = "test_database"
-        self.username = "ldaijiw"
-        self.password = "DreamJLMSU743"
-
-        # Runs the connection method to connect to server
-        self.start_connection()
-
+        super().__init__()
         # Immediately initialise the passenger_ui
         self.passenger_ui()
 
-    def start_connection(self):
-        # Server name, DB name, username, and password are required to connect with pyodbc
-        try:
-            self.db_connection = pyodbc.connect(
-                f"DRIVER=ODBC Driver 17 for SQL Server;SERVER={self.server};DATABASE={self.database};UID={self.username};PWD={self.password}")
 
-            self.cursor = self.db_connection.cursor()
-        except (ConnectionError, pyodbc.OperationalError, pyodbc.DatabaseError):
-            return "Connection Unsuccessful"
-
-        else:
-            # print(self.cursor.execute("SELECT * FROM test_table;").fetchall())
-            return "Connection Successful"
-
-    # If user selects passenger in the loging screen, this method is run
+    # If user selects passenger in the login screen, this method is run
     def passenger_ui(self):
-        print("""
-        
-        Welcome to London Heathrow Airport!
-        AVAILABLE OPTIONS
-        
-        1. View your Ticket Details
-        2. View current flights
-        
-        """)
-        user_input = int(input("What would you like to do?\n -> "))
+        print('Welcome to London Heathrow Airport!')
+        while True:
+            clear()
+            print("""
+            AVAILABLE OPTIONS
+            
+            1. View your Ticket Details
+            2. View current flights
+            3. Logout
+            TYPE <X> TO EXIT
+            """)
+            user_input = input("What would you like to do?\n -> ").strip().upper()
+            if user_input not in ['1', '2', '3', 'X']:
+                continue
 
-        # If passenger wants to see their ticket details, ask for ticket id and outputs the ticket info
-        if user_input == 1:
-            user_ticket_id = int(input("What is your Ticket ID?\n -> "))
-            your_ticket_query = f"""
-            SELECT
-                TicketDetails.Ticket_id,
-                Passengers.FirstName + ' ' + Passengers.LastName AS "Name",
-                TicketDetails.FlightTrip_id,
-                FlightTrip.ArrivalAirport,
-                Airports.AirportCountry,
-                FlightTrip.DepartureTime,
-                FlightTrip.TicketPrice
-            FROM TicketDetails
-            INNER JOIN Passengers ON TicketDetails.Passenger_id = Passengers.Passenger_id
-            INNER JOIN FlightTrip ON TicketDetails.FlightTrip_id = FlightTrip.FlightTrip_id
-            INNER JOIN Airports ON FlightTrip.DepartureAirport = Airports.Airport_id
-            WHERE TicketDetails.Ticket_id = {user_ticket_id}
-            """
-        #see ticket_id, firstname, lastname, flighttrip id, arrivalairport, departuretime, ticket price
+            if user_input == "X":
+                clear()
+                exit()
 
-            # Uses pandas to output ticket details
-            ticket_details = pd.read_sql_query(f"{your_ticket_query}", self.db_connection)
-            df1 = pd.DataFrame(ticket_details)
-            print(tabulate(df1, headers = [' ', 'Ticket ID', 'Name', 'Flight Trip ID', 'Arrival Airport', 'Country', 'Departure Date & Time', 'Ticket Price (£)'], tablefmt='psql'))
+            # If passenger wants to see their ticket details, ask for ticket id and outputs the ticket info
+            if user_input == '1':
+                clear()
+                user_ticket_id = int(input("What is your Ticket ID?\n -> "))
+                your_ticket_query = f"""
+                SELECT
+                    TicketDetails.Ticket_id,
+                    Passengers.FirstName + ' ' + Passengers.LastName AS "Name",
+                    TicketDetails.FlightTrip_id,
+                    FlightTrip.ArrivalAirport,
+                    Airports.AirportCountry,
+                    FlightTrip.DepartureTime,
+                    FlightTrip.TicketPrice,
+                    TicketDetails.PricePaid
+                FROM TicketDetails
+                INNER JOIN Passengers ON TicketDetails.Passenger_id = Passengers.Passenger_id
+                INNER JOIN FlightTrip ON TicketDetails.FlightTrip_id = FlightTrip.FlightTrip_id
+                INNER JOIN Airports ON FlightTrip.DepartureAirport = Airports.Airport_id
+                WHERE TicketDetails.Ticket_id = {user_ticket_id}
+                """
+            #see ticket_id, firstname, lastname, flighttrip id, arrivalairport, departuretime, ticket price
 
-        # If passenger wants to see current flights, run this method
-        if user_input == 2:
-            current_flights_query = """
-            SELECT 
-                FlightTrip.DepartureTime,
-                FlightTrip.FlightTrip_id,
-                FlightTrip.ArrivalAirport,
-                Airports.AirportCountry
-            FROM FlightTrip
-            INNER JOIN Airports ON FlightTrip.DepartureAirport = Airports.Airport_id
-            ORDER BY FlightTrip.DepartureTime
-            """
-        # See departure time, flighttrip id, Arrival airport, arrival country
+                # Uses pandas to output ticket details
+                ticket_details = pd.read_sql_query(f"{your_ticket_query}", self.db_connection)
+                df1 = pd.DataFrame(ticket_details)
+                print('=' * 30)
+                print('You ticket details:')
+                print('=' * 30)
 
-            # Outputs all of the current flights in the terminal
-            current_flights = pd.read_sql_query(f"{current_flights_query}", self.db_connection)
-            df2 = pd.DataFrame(current_flights)
-            print(tabulate(df2, headers = ['', 'Departure Date & Time', 'Flight Trip ID', 'Arrival Airport', 'Country'], tablefmt = 'psql'))
+                print(tabulate(df1, headers = [' ', 'Ticket ID', 'Name', 'Flight Trip ID', 'Arrival Airport', 'Country', 'Departure Date & Time', 'Ticket Price (£)', 'Total Paid (£)'], tablefmt='psql'))
+                input("\nPress <ENTER> to continue")
+                continue
+
+            # If passenger wants to see current flights, run this method
+            if user_input == '2':
+                clear()
+                current_flights_query = """
+                SELECT 
+                    FlightTrip.DepartureTime,
+                    FlightTrip.FlightTrip_id,
+                    FlightTrip.ArrivalAirport,
+                    Airports.AirportCountry
+                FROM FlightTrip
+                INNER JOIN Airports ON FlightTrip.DepartureAirport = Airports.Airport_id
+                ORDER BY FlightTrip.DepartureTime
+                """
+            # See departure time, flighttrip id, Arrival airport, arrival country
+
+                # Outputs all of the current flights in the terminal
+                current_flights = pd.read_sql_query(f"{current_flights_query}", self.db_connection)
+                df2 = pd.DataFrame(current_flights)
+                print('=' * 30)
+                print('Current flights')
+                print('=' * 30)
+
+                print(tabulate(df2, headers = ['', 'Departure Date & Time', 'Flight Trip ID', 'Arrival Airport', 'Country'], tablefmt = 'psql'))
+                input("\nPress <ENTER> to continue")
+                continue
 
 
-# To run the class
+            if user_input == '3':
+                clear()
+                print("Thank you for using the London Heathrow Airport Terminal!")
+                return "RETURNED LOGOUT"
+
+
+
+# # To run the class
 # def main():
 #
 #     test = Passenger()
 #
 #
 # if __name__ == '__main__':
-#     main()
+#      main()

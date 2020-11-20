@@ -1,8 +1,10 @@
 import pyodbc
+import datetime
 from datetime import date
 from database_connector import DBConnector
+from cryptic import Cryptic
 
-class BookingManager(DBConnector):
+class BookingManager:
     
     # TABLES: TICKET DETAILS, FLIGHT TRIP, PASSENGERS
     # INPUT: FLIGHT TRIP ID, LIST OF PASSENGER ID
@@ -116,7 +118,7 @@ class BookingManager(DBConnector):
     # The return object is a tuple consisting of Passenger Names and Staff Names in lists
     def flight_attendees_list(self, flight_trip_id):
         passenger_query = f"""
-        SELECT Passengers.Passenger_id, Passengers.FirstName, Passengers.LastName
+        SELECT Passengers.Passenger_id, Passengers.FirstName, Passengers.LastName, Passengers.PassportNumber
         FROM FlightTrip
         INNER JOIN TicketDetails ON TicketDetails.FlightTrip_id = FlightTrip.FlightTrip_id
         INNER JOIN Passengers ON Passengers.Passenger_id = TicketDetails.Passenger_id
@@ -127,7 +129,7 @@ class BookingManager(DBConnector):
             retr_passengers.append(row)
 
         staff_query = f"""
-        SELECT Staff.Staff_id, Staff.FirstName, Staff.LastName
+        SELECT Staff.Staff_id, Staff.FirstName, Staff.LastName, Staff.PassportNumber
         FROM FlightTrip
         INNER JOIN FlightStaff ON FlightStaff.FlightTrip_id = FlightTrip.FlightTrip_id
         INNER JOIN Staff ON Staff.Staff_id = FlightStaff.Staff_id
@@ -153,9 +155,9 @@ class BookingManager(DBConnector):
             print(person)
 
 
-    
     # TABLES: PASSENGER
-    def create_passenger(self, first_name, last_name, dob, gender, passport_number):
+    # Changed due to new ERD diagram -- Wednesday night
+    def create_passenger(self, first_name, last_name, dob, gender, passport_number, user_name, pass_word):
         # INPUT: FIRST NAME, LAST NAME, DOB, GENDER, PASSPORT NUMBER
         correct_details = True
 
@@ -221,7 +223,16 @@ class BookingManager(DBConnector):
             # OUTPUT: SUCCESSFUL MESSAGE
             # print("Passenger has been successfully added")
             self.db_connection.commit()
-            return "Passenger has been successfully added"
         else:
             print("Please try again")
             # return "Please try again"
+        
+        # INPUT USERNAME AND ENCRYPTED PASSWORD INTO PassengerLogins
+        crypto = Cryptic()
+        encrypted_password = crypto.encrypt(pass_word)
+
+        query = f"INSERT INTO PassengerLogins (PassengerUsername, PassengerPassword) VALUES ('{user_name}', '{encrypted_password}')"
+        self.cursor.execute(query)
+        self.db_connection.commit()
+
+        return "\nCompleted!"

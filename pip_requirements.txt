@@ -1,2 +1,8 @@
 pyodbc
 pytest
+pandas
+pip uninstall numpy
+pip install numpy == 1.19.3
+tabulate
+numpy
+cryptography
