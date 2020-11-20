@@ -96,6 +96,9 @@ class LogIn(DBConnector):
                     return LogIn()
                 login_details = list(login_details)
                 login_details.append(0)
+                database_username = login_details[0]
+                database_password = crypto.decrypt(login_details[1])
+                database_stafflevel = login_details[2]
 
 
             if input_password != database_password:
