@@ -1,0 +1,84 @@
+{% extends "staff_default.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<h2>
+    Flight Trip Manager
+</h2>
+
+  <div class="card-deck" style="width: 1000px; height: 200px;">
+    <div class="card text-white bg-success">
+      <div class="card-body">
+        <h4 class="card-title">Create Flight Trip</h4>
+        <p class="card-text">
+          Create a new trip and assign departure time and destination
+        </p>
+        <a href="/ftm/createflighttrip/" class="btn btn-dark">Create Trip</a>
+      </div>
+    </div>
+  
+    <div class="card text-white bg-info">
+      <div class="card-body">
+        <h4 class="card-title">Assign Aircraft</h4>
+        <p class="card-text">
+          Assign an Aircraft to your trip<br><br><br>
+        </p>
+        <a href="/ftm/assignaircraft/" class="btn btn-dark">Assign</a>
+      </div>
+    </div>
+
+    <div class="card text-white bg-info">
+      <div class="card-body">
+        <h4 class="card-title">Change Aircraft</h4>
+        <p class="card-text">
+          Change aircraft assignment for a trip<br><br><br>
+        </p>
+        <a href="/ftm/changeaircraft/" class="btn btn-dark">Change</a>
+      </div>
+    </div>
+
+    <div class="card text-white bg-primary">
+      <div class="card-body">
+        <h4 class="card-title">Flight Trip Income</h4>
+        <p class="card-text">
+          Check total income for an existing flight trip based on ticket sales<br>
+        </p>
+        <a href="/ftm/flighttripincome/" class="btn btn-dark">Check total sales</a>
+      </div>
+    </div>
+  </div>
+
+  <br><br>
+
+  <div class="card-deck" style="width: 1000px; height: 200px">
+    <div class="card text-white bg-secondary" style="width: 200px; height: 200px;">
+      <div class="card-body">
+        <h4 class="card-title">Check Staff Availability</h4>
+        <p class="card-text">
+          Check staff availability on site
+        </p>
+        <a href="/ftm/checkstaffavailability/" class="btn btn-dark">Check Availability</a>
+      </div>
+    </div>
+  
+    <div class="card text-white bg-secondary">
+      <div class="card-body">
+        <h4 class="card-title">Assign Staff</h4>
+        <p class="card-text">
+          Assign staff members to an existing flight trip<br>
+        </p>
+        <a href="/ftm/assignstaff/" class="btn btn-dark">Assign</a>
+      </div>
+    </div>
+
+    <div class="card text-white bg-secondary">
+      <div class="card-body">
+        <h4 class="card-title">Create Staff</h4>
+        <p class="card-text">
+          Create a new staff member<br><br>
+        </p>
+        <a href="#!" class="btn btn-dark">Create</a>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

@@ -1,5 +1,5 @@
 /venv/
 .idea/
 python/__pycache__/
-classes/__pycache__/
 /.vscode
+classes/__pycache__/

@@ -1,0 +1,25 @@
+{% extends "staff_default.html" %}
+{% block title %}CHANGE Aircraft{% endblock %}
+{% block content %}
+<h2>
+    Change Aircraft
+</h2>
+<form method="POST">
+  <div class="field">
+    <label class="label">Enter Flight Trip ID</label>
+    <div class="control has-icons-left has-icons-right">
+      <input class="input" type="text" name="flight_trip_id" placeholder="Flight Trip ID">
+      <span class="icon is-small is-left">
+        <i class="fas fa-user"></i>
+      </span>
+    </div>
+  </div>
+  <div class="field">
+    <p class="control">
+      <button type="submit" class="btn btn-dark">
+        Enter
+      </button>
+    </p>
+  </div>
+</form>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "staff_default.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<h2>
+    Staff Home
+</h2>
+
+  <div class="card-deck" style="width: 800px; height: 200px;">
+    <div class="card text-white bg-success">
+      <div class="card-body">
+        <h4 class="card-title">Flight Trip Manager</h4>
+        <p class="card-text">
+          Create flight trips, assign aircraft and staff, check staff availability, and more...
+        </p>
+        <a href="/ftm/" class="btn btn-dark">Open FTM</a>
+      </div>
+    </div>
+
+    <div class="card text-white bg-info">
+      <div class="card-body">
+        <h4 class="card-title">Booking Manager</h4>
+        <p class="card-text">
+          Make bookings, check current flight attendees, and create passengers...
+        </p>
+        <a href="/bm/" class="btn btn-dark">Open BM</a>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

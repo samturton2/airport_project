@@ -1,4 +1,8 @@
-from database_connector import DBConnector
+if __name__ == "__main__":
+    from database_connector import DBConnector
+else:
+    from classes.database_connector import DBConnector
+    
 from datetime import datetime, timedelta
 from cryptic import Cryptic
 
@@ -13,7 +17,7 @@ class FlightTripManager:
         INSERT INTO FlightTrip (DepartureTime, ArrivalTime, DepartureAirport, ArrivalAirport, TicketPrice, TicketDiscount)
         VALUES ('{DepartureTime.strftime('%Y-%m-%d %H:%M:%S')}', '{ArrivalTime.strftime('%Y-%m-%d %H:%M:%S')}', 'LHR', '{ArrivalAirport}', {TicketPrice}, {TicketDiscount});
         """)
-        # self.db_connection.commit()
+        self.db_connection.commit()
         # Attempt to collect the last inserted flight trip identity
         FlightTrip_id = list(self.cursor.execute(f"SELECT FlightTrip_id FROM FlightTrip WHERE FlightTrip_id = @@IDENTITY;").fetchone())[0]
         # RETURN: FLIGHT TRIP ID
@@ -47,7 +51,6 @@ class FlightTripManager:
         except:
             return "something went wrong, perhaps incorrect FlightTrip id"
 
-
     # TABLES: FLIGHT TRIP, AIRCRAFT
     def change_aircraft(self, FlightTrip_id):
         try:
@@ -56,13 +59,16 @@ class FlightTripManager:
             # CHECK THAT IT's A VALID FLIGHT TRIP ID
             try:
                 # COLLECT CURRENT AIRPLANE ID IF ITS BEEN ASSIGNED AN AIRCRAFT
-                Aircraft_id = list(self.cursor.execute(f"SELECT Aircraft_id FROM FlightTrip_id WHERE FlightTrip_id = {FlightTrip_id};").fetchone())[0]
+                Aircraft_id = list(self.cursor.execute(f"SELECT Aircraft_id FROM FlightTrip WHERE FlightTrip_id = {FlightTrip_id};").fetchone())[0]
                 print(Aircraft_id)
+
                 # CALL ASSIGN_AIRCRAFT() AGAIN
                 self.cursor.execute(f"UPDATE Aircraft SET AircraftStatus_id = 1 WHERE Aircraft_id = {Aircraft_id};")
                 self.db_connection.commit()
                 newAircraft_id = self.assign_aircraft(FlightTrip_id)
+
                 return newAircraft_id
+
 
             except:
                 # CALL ASSIGN_AIRCRAFT() AGAIN
@@ -236,9 +242,16 @@ class FlightTripManager:
     
     def calculate_ticket_income(self, flight_trip_id):
         ticket_sum = self.cursor.execute(f"SELECT SUM(PricePaid) FROM TicketDetails WHERE FlightTrip_id = {flight_trip_id}").fetchone()
+<<<<<<< HEAD
+        return f"The total income from ticket sales for flight {flight_trip_id} is: £{ticket_sum[0]}"
+
+# test = FlightTripManager()
+# print(test.create_flight_trip(datetime.now(), "EDI", 200.00, 20))
+=======
         ticket_sum = list(ticket_sum)
         if ticket_sum[0] == None:
             money = 0
         else:
             money = ticket_sum[0]
         return f"The total income from ticket sales for flight {flight_trip_id} is: £{money}"
+>>>>>>> test_env
