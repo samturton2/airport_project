@@ -1,4 +1,5 @@
 -- Drops all tables, creates them and insert data into them in one query
+-- This should only be run if one does not care about encrypting passwords
 DROP TABLE FlightStaff;
 DROP TABLE TicketDetails;
 DROP TABLE FlightTrip;
@@ -26,7 +27,7 @@ CREATE TABLE [Passengers] (
 CREATE TABLE [PassengerLogins] (
     [Passenger_id] INT IDENTITY(1,1) NOT NULL,
     PassengerUsername VARCHAR(32),
-    PassengerPassword VARCHAR(32),
+    PassengerPassword VARCHAR(MAX),
     PRIMARY KEY ([Passenger_id])
 
 );
@@ -53,7 +54,7 @@ CREATE TABLE [Staff] (
 CREATE TABLE [StaffLogins] (
     [Staff_id] INT IDENTITY(1,1) NOT NULL,
     [StaffUsername] VARCHAR(32),
-    [StaffPassword] VARCHAR(32),
+    [StaffPassword] VARCHAR(MAX),
     [StaffLevel] INT,
     PRIMARY KEY ([Staff_id])
 

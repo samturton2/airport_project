@@ -1,8 +1,9 @@
 import pyodbc
+import getpass
 from os import system, name
 from time import sleep
 from database_connector import DBConnector
-from passenger_ui import Passenger # import passengers class
+from passenger_ui import Passenger
 from staff_ui import StaffUI_1, StaffUI_2
 import pandas
 from tabulate import tabulate
@@ -21,8 +22,10 @@ class LogIn(DBConnector):
         self.staff = False
         while True:
             clear()
+            print(self.server)
             print("  ______________________________________________ ")
-            print(" | Choose option:                               |")
+            print(" |                Homepage                      |")
+            print(" |                                              |")
             print(" |                1. Passenger                  |")
             print(" |                2. Staff                      |")
             print(" |                3. Exit                       |")
@@ -31,7 +34,6 @@ class LogIn(DBConnector):
             print(" |______________________________________________|")
 
             if answer not in ["1", "P", "2", "S", "3", "E"]:
-                clear()
                 continue
 
             if answer in ["3", "E"]:
@@ -56,6 +58,11 @@ class LogIn(DBConnector):
         while True:
             clear()
             i += 1
+            if i > 5:
+                # IF LOG IN FAILED 5 TIMES SHUT THEM OUT
+                print("\nYou have been shut out of the system!")
+                input("\nPress <ENTER> to exit")
+                exit()
 
 
             print("  ______________________________________________ ")
@@ -63,9 +70,8 @@ class LogIn(DBConnector):
             print(" |                                              |")
             username = input(" |        Username: ").strip()
             print(" |                                              |")
-            password = input(" |        Password: ").strip()
+            input_password = getpass.getpass(" |        Password: ")
             print(" |______________________________________________|")
-
 
 
             # LOAD IN THE RELEVANT PASSENGERS AND STAFF LOG IN DETAILS
@@ -76,9 +82,13 @@ class LogIn(DBConnector):
                     print("\nUsername not recognised!\n")
                     input("\nPress <ENTER> to continue")
                     return LogIn()
-                login_details = list(login_details)
 
-            elif self.passenger:
+                login_details = list(login_details)
+                database_username = login_details[0]
+                database_password = crypto.decrypt(login_details[1])
+                database_stafflevel = login_details[2]
+
+            else:
                 login_details = self.cursor.execute(f"SELECT PassengerUsername, PassengerPassword FROM PassengerLogins WHERE PassengerUsername = '{username}';").fetchone()
                 if login_details == None:
                     print("\nUsername not recognised!\n")
@@ -87,25 +97,12 @@ class LogIn(DBConnector):
                 login_details = list(login_details)
                 login_details.append(0)
 
-            try:
-                password = crypto.decrypt(str(login_details.pop(1)))
-                login_details.insert(1, password)
-                
-            except:
-                login_details = [0,0,0]
 
-
-            if password != login_details[1]:
+            if input_password != database_password:
                 print("\nPassword Incorrect\n")
                 input("\nPress <ENTER> to continue")
-
-            elif i > 5:
-                # IF LOG IN FAILED 5 TIMES SHUT THEM OUT
-                print(" You have been shut out of the system! ")
-                exit()
-
-
-            elif [username, password] == login_details[:2]:
+                continue
+            else:
                 clear()
                 print("  ______________________________________________ ")
                 print(" |  Login Page                                  |")
@@ -114,7 +111,7 @@ class LogIn(DBConnector):
                 print(" |               LOADING.                       |")
                 print(" |                                              |")
                 print(" |______________________________________________|")
-                sleep(0.5)
+                sleep(0.7)
                 clear()
                 print("  ______________________________________________ ")
                 print(" |  Login Page                                  |")
@@ -123,7 +120,7 @@ class LogIn(DBConnector):
                 print(" |               LOADING..                      |")
                 print(" |                                              |")
                 print(" |______________________________________________|")
-                sleep(0.5)
+                sleep(0.7)
                 clear()
                 print("  ______________________________________________ ")
                 print(" |  Login Page                                  |")
@@ -132,22 +129,26 @@ class LogIn(DBConnector):
                 print(" |               LOADING...                     |")
                 print(" |                                              |")
                 print(" |______________________________________________|")
-                sleep(0.5)
+                sleep(0.7)
 
 
                 if self.staff:
-                    if login_details[2] == 1:
+                    if database_stafflevel == 1:
                         # RUN STAFF 1 CAPABILITIES
                         retr = StaffUI_1()
+
                         if retr == "RETURNED LOGOUT":
                             return LogIn()
+
                         return login_details[0], login_details[1], login_details[2]
 
-                    elif list(login_details)[2] == 2:
+                    if database_stafflevel == 2:
                         # RUN STAFF 2 CAPABILITIES
                         retr = StaffUI_2()
+
                         if retr == "RETURNED LOGOUT":
                             return LogIn()
+
                         return login_details[0], login_details[1], login_details[2]
 
 

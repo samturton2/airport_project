@@ -2,6 +2,7 @@ import pyodbc
 from os import system, name
 import pandas as pd
 from tabulate import tabulate
+from database_connector import DBConnector
 import time
 
 def clear():
@@ -10,34 +11,11 @@ def clear():
     else:
         _ = system("clear")
 
-class Passenger:
+class Passenger(DBConnector):
     def __init__(self):
-
-        # Connecting to  DB
-        self.server = "ldaijiw-micro.cdix33vx1qyf.eu-west-2.rds.amazonaws.com"
-        self.database = "db_with_logins"
-        self.username = "ldaijiw"
-        self.password = "DreamJLMSU743"
-
-        # Runs the connection method to connect to server
-        self.start_connection()
-
+        super().__init__()
         # Immediately initialise the passenger_ui
         self.passenger_ui()
-
-    def start_connection(self):
-        # Server name, DB name, username, and password are required to connect with pyodbc
-        try:
-            self.db_connection = pyodbc.connect(
-                f"DRIVER=ODBC Driver 17 for SQL Server;SERVER={self.server};DATABASE={self.database};UID={self.username};PWD={self.password}")
-
-            self.cursor = self.db_connection.cursor()
-        except (ConnectionError, pyodbc.OperationalError, pyodbc.DatabaseError):
-            return "Connection Unsuccessful"
-
-        else:
-            # print(self.cursor.execute("SELECT * FROM test_table;").fetchall())
-            return "Connection Successful"
 
 
     # If user selects passenger in the login screen, this method is run

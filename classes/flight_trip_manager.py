@@ -2,7 +2,7 @@ from database_connector import DBConnector
 from datetime import datetime, timedelta
 from cryptic import Cryptic
 
-class FlightTripManager(DBConnector):
+class FlightTripManager:
     
     # TABLES: FLIGHT TRIP, AIRPORTS
     def create_flight_trip(self, DepartureTime, ArrivalAirport, TicketPrice, TicketDiscount):
@@ -57,18 +57,18 @@ class FlightTripManager(DBConnector):
             try:
                 # COLLECT CURRENT AIRPLANE ID IF ITS BEEN ASSIGNED AN AIRCRAFT
                 Aircraft_id = list(self.cursor.execute(f"SELECT Aircraft_id FROM FlightTrip_id WHERE FlightTrip_id = {FlightTrip_id};").fetchone())[0]
+                print(Aircraft_id)
                 # CALL ASSIGN_AIRCRAFT() AGAIN
+                self.cursor.execute(f"UPDATE Aircraft SET AircraftStatus_id = 1 WHERE Aircraft_id = {Aircraft_id};")
+                self.db_connection.commit()
                 newAircraft_id = self.assign_aircraft(FlightTrip_id)
+                return newAircraft_id
 
             except:
                 # CALL ASSIGN_AIRCRAFT() AGAIN
                 newAircraft_id = self.assign_aircraft(FlightTrip_id)
-            else:
-                self.cursor.execute(f"UPDATE Aircraft SET AircraftStatus_id = 1 WHERE Aircraft_id = {Aircraft_id};")
-                self.db_connection.commit()
-            finally:
                 # RETURN: NEW AIRCRAFT ID
-                return newAircraft_id
+
         except:
             return "something went wrong, perhaps incorrect FlightTrip id"
 
@@ -236,4 +236,9 @@ class FlightTripManager(DBConnector):
     
     def calculate_ticket_income(self, flight_trip_id):
         ticket_sum = self.cursor.execute(f"SELECT SUM(PricePaid) FROM TicketDetails WHERE FlightTrip_id = {flight_trip_id}").fetchone()
-        return f"The total income from ticket sales for flight {flight_trip_id} is: £{ticket_sum[0]}"
+        ticket_sum = list(ticket_sum)
+        if ticket_sum[0] == None:
+            money = 0
+        else:
+            money = ticket_sum[0]
+        return f"The total income from ticket sales for flight {flight_trip_id} is: £{money}"

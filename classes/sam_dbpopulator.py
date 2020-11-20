@@ -1,6 +1,8 @@
 from database_connector import DBConnector
 from cryptic import Cryptic
 
+#THIS WAS KEPT AS A REFERENCE< SHOULD NOT USE
+
 class DBPopulator(DBConnector):
     def __init__(self):
         super().__init__()
