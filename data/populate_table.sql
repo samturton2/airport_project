@@ -1,3 +1,4 @@
+-- This should only be run if one does not care about encrypting passwords
 -- AIRPORTS
 INSERT INTO Airports (Airport_ID, AirportName, AirportCountry, Timezone) VALUES ('LHR', 'London Heathrow', 'UK', 0);
 INSERT INTO Airports (Airport_ID, AirportName, AirportCountry, Timezone) VALUES ('LGW', 'London Gatwick',  'UK', 0);

@@ -15,48 +15,24 @@ def clear():
 
 
 # LEVEL 1 STAFF
-class StaffUI_1(BookingManager, FlightTripManager):
+class StaffUI_1(DBConnector, BookingManager, FlightTripManager):
     def __init__(self):
-        # connect to  DB
-        self.server = "ldaijiw-micro.cdix33vx1qyf.eu-west-2.rds.amazonaws.com"
-        self.database = "db_with_logins"
-        self.username = "ldaijiw"
-        self.password = "DreamJLMSU743"
-        self.start_connection()
-        
+        super().__init__()
         self.user_options()
-
-
-    # A function that creates a connection to database and sets cursor and connection attributes
-    def start_connection(self):
-        # server name, DB name, username, and password are required to connect with pyodbc
-        try:
-            self.db_connection = pyodbc.connect(
-                f"DRIVER=ODBC Driver 17 for SQL Server;SERVER={self.server};DATABASE={self.database};UID={self.username};PWD={self.password}"
-            )
-            self.cursor = self.db_connection.cursor()
-        except (ConnectionError, pyodbc.OperationalError, pyodbc.DatabaseError):
-            return "Connection Unsuccessful"
-        
-        else:
-            return "Connection Successful"
-
-
-        # This shows the available options for the user
-    
     
     def user_options(self):
         while True:
             clear()
             print("""
-            \nWELCOME TO THE STAFF MENU - ACCESS LEVEL: 2\n
+            \n        WELCOME TO THE STAFF MENU - ACCESS LEVEL 1\n
                 Options:
                 0. Make a booking
                 1. Create a new passenger
                 2. Print a list of names of who's on a flight
                 3. Logout
+
                 TYPE <X> TO SHUTDOWN""")
-            choice = input("---> ").upper().strip()
+            choice = input("   ---> ").upper().strip()
 
 
             if choice not in ["0", "1", "2", "3", "X"]:
@@ -94,15 +70,18 @@ class StaffUI_1(BookingManager, FlightTripManager):
         for row in y:
             list_of_flights_check.append(row[0])
 
-        while True:
-            print("\nCurrent Flight ID's:", list_of_flights_check)
-            for flightid in list_of_flights_check:
-                asd = self.cursor.execute(f"SELECT DepartureAirport, ArrivalAirport FROM FlightTrip WHERE FlightTrip_id = {flightid}").fetchone()
+        print("\nCurrent Flight ID's:", list_of_flights_check, "\n")
 
+        for f_id in list_of_flights_check:
+            x = self.cursor.execute(f"SELECT DepartureAirport, ArrivalAirport FROM FlightTrip WHERE FlightTrip_id = {f_id}").fetchone()
+            x = list(x)
+            print(f"{f_id} : {x[0]} to {x[1]}")
+
+        while True:
             flight_to_add = input("\nInput FlightTrip ID or X to go back: ").strip().upper()
 
             if flight_to_add == "X":
-                return print("\nAdding passengers aborted")
+                return print("\nMaking booking aborted")
 
             if not flight_to_add.isdigit():
                 print("\nWrong input format, try again")
@@ -128,15 +107,24 @@ class StaffUI_1(BookingManager, FlightTripManager):
         
         self.make_booking(flight_to_add, list_to_add)
         print("\nPassengers added")
+        input("\nPress <ENTER> to continue")
 
 
-    # OPTION 2
+    # OPTION 1
     # CHECKED
     def create_new_passenger(self):
         # INPUT: FIRST NAME, LAST NAME, DOB, GENDER, PASSPORT NUMBER
         firstname = input("\nInput first name: ").title().strip()
         lastname = input("Input last name: ").title().strip()
-        dob = input("Enter date of birth (YYYY-MM-DD): ")
+
+        while  True:
+            dob = input("Enter date of birth (YYYY-MM-DD): ").strip()
+            check_list = dob.split("-")
+            for val in check_list:
+                if not val.isdigit():
+                    continue
+            break
+
         gender = input("Input gender: ").title().strip()
         while True:
             passportnumber = input("Input a 9-digit Passport number: ").strip()
@@ -166,9 +154,10 @@ class StaffUI_1(BookingManager, FlightTripManager):
         pass_word = input("Choose a password: ").strip()
 
         print(self.create_passenger(firstname, lastname, dob, gender, passportnumber,user_name, pass_word))
+        input("\nPress <ENTER> to continue")
 
 
-    # OPTION 3
+    # OPTION 2
     # CHECKED
     def print_list_flight_names(self):
         y = self.cursor.execute("SELECT FlightTrip_id FROM FlightTrip;")
@@ -197,31 +186,10 @@ class StaffUI_1(BookingManager, FlightTripManager):
 
 
 # LEVEL 2 STAFF
-class StaffUI_2(BookingManager, FlightTripManager):
+class StaffUI_2(DBConnector, BookingManager, FlightTripManager):
     def __init__(self):
-        # connect to  DB
-        self.server = "ldaijiw-micro.cdix33vx1qyf.eu-west-2.rds.amazonaws.com"
-        self.database = "db_with_logins"
-        self.username = "ldaijiw"
-        self.password = "DreamJLMSU743"
-        self.start_connection()
-        
+        super().__init__()
         self.user_options()
-
-
-    # A function that creates a connection to database and sets cursor and connection attributes
-    def start_connection(self):
-        # server name, DB name, username, and password are required to connect with pyodbc
-        try:
-            self.db_connection = pyodbc.connect(
-                f"DRIVER=ODBC Driver 17 for SQL Server;SERVER={self.server};DATABASE={self.database};UID={self.username};PWD={self.password}"
-            )
-            self.cursor = self.db_connection.cursor()
-        except (ConnectionError, pyodbc.OperationalError, pyodbc.DatabaseError):
-            return "Connection Unsuccessful"
-        
-        else:
-            return "Connection Successful"
 
 
     # This shows the available options for the user
@@ -230,7 +198,7 @@ class StaffUI_2(BookingManager, FlightTripManager):
             clear()
             print("""
 
-            \nWELCOME TO THE STAFF MENU - ACCESS LEVEL: 2\n
+            \n        WELCOME TO THE STAFF MENU - ACCESS LEVEL 2\n
                 Options:
                 0. Make a booking
                 1. Create a new staff member
@@ -243,8 +211,9 @@ class StaffUI_2(BookingManager, FlightTripManager):
                 8. Calculate the income from a flight
                 9. Print a list of names of who's on a flight
                 10. LOGOUT
+
                 TYPE <X> TO SHUTDOWN""")
-            choice = input("---> ").upper().strip()
+            choice = input("  ---> ").upper().strip()
 
 
             if choice not in ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "X"]:
@@ -259,52 +228,53 @@ class StaffUI_2(BookingManager, FlightTripManager):
 
             if choice == "0":
                 self.staffui_make_booking()
-                sleep(2)
+                sleep(1)
 
 
             if choice == "1":
                 self.create_new_staff_member()
-                sleep(2)
+                sleep(1)
 
 
             if choice == "2":
                 self.create_new_passenger()
-                sleep(2)
+                sleep(1)
 
 
             if choice == "3":
                 self.create_new_flight_trip()
-                sleep(2)
+                sleep(1)
 
 
             if choice == "4":
                 self.assign_aircraft_to_existing_flight_trip()
-                sleep(2)
+                sleep(1)
 
 
             if choice == "5":
                 self.change_aircraft_in_trip()
-                sleep(2)
+                input("\nPress <ENTER> to continue")
+                sleep(1)
 
 
             if choice == "6":
                 self.check_flight_staff_available()
-                sleep(2)
+                sleep(1)
 
 
             if choice == "7":
                 self.assign_staff_to_existing_flight()
-                sleep(2)
+                sleep(1)
 
 
             if choice == "8":
                 self.calculate_income_from_flight()
-                sleep(2)
+                sleep(1)
 
 
             if choice == "9":
                 self.print_list_flight_names()
-                sleep(2)
+                sleep(1)
 
             if choice == "10":
                 clear()
@@ -317,12 +287,18 @@ class StaffUI_2(BookingManager, FlightTripManager):
         for row in y:
             list_of_flights_check.append(row[0])
 
-        print("\nCurrent Flight ID's:", list_of_flights_check)
+        print("\nCurrent Flight ID's:", list_of_flights_check, "\n")
+
+        for f_id in list_of_flights_check:
+            x = self.cursor.execute(f"SELECT DepartureAirport, ArrivalAirport FROM FlightTrip WHERE FlightTrip_id = {f_id}").fetchone()
+            x = list(x)
+            print(f"{f_id} : {x[0]} to {x[1]}")
+
         while True:
             flight_to_add = input("\nInput FlightTrip ID or X to go back: ").strip().upper()
 
             if flight_to_add == "X":
-                return print("\nAdding aircraft aborted")
+                return print("\nMaking booking aborted")
 
             if not flight_to_add.isdigit():
                 print("\nWrong input format, try again")
@@ -348,17 +324,20 @@ class StaffUI_2(BookingManager, FlightTripManager):
         
         self.make_booking(flight_to_add, list_to_add)
         print("\nPassengers added")
+        input("\nPress <ENTER> to continue")
     
     # OPTION 1
     # CHECKED
     def create_new_staff_member(self):
         # INPUT: JOB_ID, FIRST NAME, LAST NAME, USERNAME, PASSWORD, PASSPORT NUMBER, GENDER, ON LOCATION, STAFF LEVEL
-        try:
-            job = input("\nWhat's their job? ")
+        while True:
+            print("\nJOB ID:\n1 = Airport Staff\n2 = Flight Crew")
+            job = input("\nWhat's their job? ").strip()
+            if job not in ["1", "2"]:
+                print("\nNot a valid option, choose again")
+                continue
             job = int(job)
-        except:
-            print("Please input a number")
-            return self.create_new_staff_member()
+            break
 
         firstname = input("Input first name: ").title().strip()
         lastname = input("Input last name: ").title().strip()
@@ -401,7 +380,7 @@ class StaffUI_2(BookingManager, FlightTripManager):
                 break
 
         print(self.create_staff(job, firstname, lastname, username, password, passportnumber, gender, on_location, staff_level))
-
+        input("\nPress <ENTER> to continue")
 
     # OPTION 2
     # CHECKED
@@ -447,7 +426,7 @@ class StaffUI_2(BookingManager, FlightTripManager):
         pass_word = input("Choose a password: ").strip()
 
         print(self.create_passenger(firstname, lastname, dob, gender, passportnumber,user_name, pass_word))
-
+        input("\nPress <ENTER> to continue")
     
     # OPTION 3
     # CHECKED
@@ -495,7 +474,13 @@ class StaffUI_2(BookingManager, FlightTripManager):
 
         self.create_flight_trip(dt_input, arrivalairport, ticketprice, ticketdiscount)
         print("\nAdded!")
-        self.assign_aircraft_to_existing_flight_trip()
+        while True:
+            choose = input("\nWould you like to assign an aircraft to this flight (Y/N)? ").strip().upper()
+            if choose in ["Y", "YES", "1"]:
+                self.assign_aircraft_to_existing_flight_trip()
+            else:
+                break
+        input("Press <ENTER> to continue")
         
         
     # OPTION 4
@@ -506,7 +491,16 @@ class StaffUI_2(BookingManager, FlightTripManager):
         for row in y:
             list_of_flights_check.append(row[0])
 
+        if not list_of_flights_check:
+            print("\nAll flights have assigned aircrafts")
+            return input("\nPress <ENTER> to continue")
+
         print("\nCurrent Flight ID's that require an aircraft:", list_of_flights_check)
+        for f_id in list_of_flights_check:
+            x = self.cursor.execute(f"SELECT DepartureAirport, ArrivalAirport FROM FlightTrip WHERE FlightTrip_id = {f_id}").fetchone()
+            x = list(x)
+            print(f"{f_id} : {x[0]} to {x[1]}")
+
         while True:
             flight_to_add = input("\nInput FlightTrip ID or X to go back: ").strip().upper()
             if flight_to_add == "X":
@@ -535,11 +529,16 @@ class StaffUI_2(BookingManager, FlightTripManager):
             list_of_flights_check.append(row[0])
 
         print("\nCurrent Flight ID's:", list_of_flights_check)
+        for f_id in list_of_flights_check:
+            x = self.cursor.execute(f"SELECT DepartureAirport, ArrivalAirport FROM FlightTrip WHERE FlightTrip_id = {f_id}").fetchone()
+            x = list(x)
+            print(f"{f_id} : {x[0]} to {x[1]}")
+
         while True:
-            flight_to_add = input("\nInput FlightTrip ID or X to go back: ").strip().upper()
+            flight_to_add = input("\nInput FlightTrip ID (X to cancel): ").strip().upper()
 
             if flight_to_add == "X":
-                return print("\nAdding aircraft aborted")
+                return print("\nAdding aircraft cancelled")
 
             if not flight_to_add.isdigit():
                 print("\nWrong input format, try again")
@@ -551,20 +550,23 @@ class StaffUI_2(BookingManager, FlightTripManager):
             else:
                 break
         
-        print(self.change_aircraft(flight_to_add))
-
+        self.change_aircraft(flight_to_add)
+        print("\nAircraft changed")
+        input("\nPress <ENTER> to continue")
 
     # OPTION 6
     # FINALISED
     def check_flight_staff_available(self):
         list_of_staff = self.check_staff_availability()
-        tuple_columns = "Staff_id", "FirstName", "LastName"
         print("\nCurrent flight crew available:")
-        print(tuple_columns)
+        print("\nStaff_id  FirstName  LastName")
         for row in list_of_staff:
-            print(row[0], row[1], row[2])
-        input("\nPress <ENTER> to continue")
+            print(f"{row[0]}  {row[1]}  {row[2]}")
 
+        retr = []
+        for staff_id in list_of_staff:
+            retr.append(staff_id[0])
+        return retr
 
     # OPTION 7
     # CHECKED
@@ -575,8 +577,16 @@ class StaffUI_2(BookingManager, FlightTripManager):
             list_of_flights_check.append(row[0])
 
         print("\nCurrent Flight ID's:", list_of_flights_check)
+        for f_id in list_of_flights_check:
+            x = self.cursor.execute(f"SELECT DepartureAirport, ArrivalAirport FROM FlightTrip WHERE FlightTrip_id = {f_id}").fetchone()
+            x = list(x)
+            print(f"{f_id} : {x[0]} to {x[1]}")
+
         while True:
-            flight_to_add = input("\nWhich flight? (Input FlightTrip_id) ").strip()
+            flight_to_add = input("\nInput FlightTrip ID (Type X to exit): ").strip().upper()
+            if flight_to_add == "X":
+                break
+
             if not flight_to_add.isdigit():
                 print("\nWrong input format, try again")
                 continue
@@ -587,23 +597,36 @@ class StaffUI_2(BookingManager, FlightTripManager):
             else:
                 break
             
+        list_of_ids_check = self.check_flight_staff_available()
+        print(list_of_ids_check)
+        
         while True:       
-            self.check_flight_staff_available()
-            id_input = input("\nPlease input the staff_id's to add from the list, separated by commas:\n")
-            list_to_add = id_input.split(",")
+            id_input = input("\nPlease input the Staff ID's to add from the list, separated by commas:\n")
+            try:
+                list_to_add = id_input.split(",")
+            except:
+                print("\nTry again")
+                continue
+            error_list = []
             for val in list_to_add:
                 if not val.isdigit():
+                    print("\nWrong format, try again")
                     continue
+                if int(val) not in list_of_ids_check:
+                    error_list.append(val)
+                    print(error_list)
+            if error_list:
+                print("\nThe following staff aren't available:", error_list)
+                continue        
             break
 
         list_to_add = list(map(lambda x: x.strip(), list_to_add))
         list_to_add = list(map(lambda x: int(x), list_to_add))
-        print(list_to_add)
-
 
         try:
             self.assign_staff_to_flight(flight_to_add, list_to_add)
             print("\nAdded!")
+            input("\nPress <ENTER> to continue")
         except:
             print("\nTry again!")
 
@@ -617,6 +640,11 @@ class StaffUI_2(BookingManager, FlightTripManager):
             list_of_flights_check.append(row[0])
 
         print("\nCurrent Flight ID's:", list_of_flights_check)
+        for f_id in list_of_flights_check:
+            x = self.cursor.execute(f"SELECT DepartureAirport, ArrivalAirport FROM FlightTrip WHERE FlightTrip_id = {f_id}").fetchone()
+            x = list(x)
+            print(f"{f_id} : {x[0]} to {x[1]}")
+        
         while True:
             id_to_sum = input("Check income from which flight? ").strip()
             if not id_to_sum.isdigit():
@@ -643,9 +671,13 @@ class StaffUI_2(BookingManager, FlightTripManager):
             list_of_flights_check.append(row[0])
 
         print("\nCurrent Flight ID's:", list_of_flights_check)
+        for f_id in list_of_flights_check:
+            x = self.cursor.execute(f"SELECT DepartureAirport, ArrivalAirport FROM FlightTrip WHERE FlightTrip_id = {f_id}").fetchone()
+            x = list(x)
+            print(f"{f_id} : {x[0]} to {x[1]}")
 
         while True:
-            flight_trip_id = input("Enter FlightTrip ID: ").strip()
+            flight_trip_id = input("\nEnter FlightTrip ID: ").strip()
             if not flight_trip_id.isdigit():
                 print("\nPlease input valid numbers")
                 continue

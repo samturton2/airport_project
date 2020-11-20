@@ -4,7 +4,7 @@ from datetime import date
 from database_connector import DBConnector
 from cryptic import Cryptic
 
-class BookingManager(DBConnector):
+class BookingManager:
     
     # TABLES: TICKET DETAILS, FLIGHT TRIP, PASSENGERS
     # INPUT: FLIGHT TRIP ID, LIST OF PASSENGER ID
@@ -229,7 +229,7 @@ class BookingManager(DBConnector):
         
         # INPUT USERNAME AND ENCRYPTED PASSWORD INTO PassengerLogins
         crypto = Cryptic()
-        encrypted_password = crypto.encrpyt(pass_word)
+        encrypted_password = crypto.encrypt(pass_word)
 
         query = f"INSERT INTO PassengerLogins (PassengerUsername, PassengerPassword) VALUES ('{user_name}', '{encrypted_password}')"
         self.cursor.execute(query)
